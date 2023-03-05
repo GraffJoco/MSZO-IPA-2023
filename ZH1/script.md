@@ -62,7 +62,7 @@ Gyorsan vegyük át az anyag azon részét, amivel azok, akik más nyelvet ismer
 - **Főfüggvény:**
 	- int típusú, main a neve, három féle módon lehet a parétereket megadni:
 		```C
-		int main() {}					//Leggyakoribb iteráció
-		int main(void) {}				//Ugyanaz, mint az előző
-		int main(int argc, char** argv) //Ha a konzolban futási paramétereket fogad el
+		int main() {}						//Leggyakoribb iteráció
+		int main(void) {}					//Ugyanaz, mint az előző
+		int main(int argc, char** argv) {}	//Ha a konzolban futási paramétereket fogad el
 		```
