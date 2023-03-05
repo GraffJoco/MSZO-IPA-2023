@@ -29,7 +29,7 @@ Gyorsan vegyük át az anyag azon részét, amivel azok, akik más nyelvet ismer
 			```
 		- Szöveget, ha nem módosítjuk, is használhatjuk normálisan:
 			```C
-			printf("Hello World!")
+			printf("Hello World!");
 			```
 	- Konstans <típus>:
 		- Akármilyen típussal működik, de a deklarálásnál KÖTELEZŐ kezdőértéket adni, és utána módosíthatatlan:
@@ -58,4 +58,11 @@ Gyorsan vegyük át az anyag azon részét, amivel azok, akik más nyelvet ismer
 	- Amennyiben beépített könvtár, a `#include <név>` paranccsal lehet importálni, pl.:
 		```C
 		#include <stdio.h>
+		```
+- **Főfüggvény:**
+	- int típusú, main a neve, három féle módon lehet a parétereket megadni:
+		```C
+		int main() {}					//Leggyakoribb iteráció
+		int main(void) {}				//Ugyanaz, mint az előző
+		int main(int argc, char** argv) //Ha a konzolban futási paramétereket fogad el
 		```
