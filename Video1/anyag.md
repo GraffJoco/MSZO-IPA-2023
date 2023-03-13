@@ -1,4 +1,4 @@
-# IPA 1. zárthelyi 2023  
+# IPA 1. zárthelyi videó 2023  
 ## Gyors bevezetés  
 A C-t, mint programnyelvet azért használjuk, mivel minimális absztrakciókkal, gyorsabban lehet alacsony szintű kódot írni. Ha láttok egy sor C kódot, szinte azonnal egyértelmű, hogy mit csinál a kód, és hogyan alakítja gépi kóddá a fordítóprogram. 
 Mivel ilyen közel van a hardwarehez, ezért szinte ugyanazzal a sebességgel fut a programunk, mintha mi írtuk volna a gépi kódját, mialatt egy magasabb szintű nyelv (pl.: C#, Java, Python) nagyságrendekkel lassabb.
@@ -6,7 +6,7 @@ Egy modern gépen ez általában mindegy, de kis kapacitású hardwaren (pl.: Ar
 **Példa: sebességek összehasonlítása a legnépszerűbb programnyelvekben**  
 | Teszt neve | C / C++ | C# | Javascript | Python |
 | :-: | :-: | :-: | :-: | :-: |
-| [$\pi$ számítása a Liebniz formulával](https://github.com/niklas-heer/speed-comparison) (s) | 67 | 209 | 305 | 669 |
+| [Pi számítása a Liebniz formulával](https://github.com/niklas-heer/speed-comparison) (s) | 67 | 209 | 305 | 669 |
 | [50. Fibonacci szám rekurzív számítása](https://github.com/EdwardRees/Programming-Language-Speed-Comparison) (s) | 42,5 | 104 | 71 | 3434 |  
   
 **Ebben a konzultációban *minimális* kódolási tudás elvárt**, tehát pl.: a változókat és függvényeket, mint fogalmat vagy nem-,  vagy csak minimálisan fogjuk elmagyarázni  
@@ -16,7 +16,7 @@ Az anyag négy részre oszklik:
 - A C nehezebb/egyedi részei (pl.: pointer, string)
 - Trükkök és tippek, amik gyorsíthatnak, vagy egyszerűbbé teszik a munkát
 
-## Alapfogalmak
+# Alapfogalmak
 - **Utasítás**: A számítógép egy feladatot (pl.: számítást csinál meg)  
 	A C-ben ; kell utána:  
 	```C
@@ -99,7 +99,7 @@ Az anyag négy részre oszklik:
 	- `//` ha egysoros
 	- `/*` és `*/` között akármilyen hosszú
 
-## C-s fogalmak azoknak, akik már tudnak más nyelvet
+# C-s fogalmak azoknak, akik már tudnak más nyelvet
 
 - **Típusok:**
 	- Háttér: a számítógépnek mindig tudnia kell, hogy milyen típussal dolgozik, és az mekkora (a memóriában), ezért a C, és számos más nyelv különböző funkciójú, kapacitású, és hosszú típussal dolgozik
@@ -124,8 +124,9 @@ Az anyag négy részre oszklik:
 			int tomb[5] = {0, 1, 2, 3, 4};
 			tomb[3] = 97;
 			```
-		- Szöveget, ha nem módosítjuk, is használhatjuk normálisan:
+		- Szöveget, ha nem módosítjuk, is használhatjuk normálisan (idézőjelben), viszont string helyett a típusa **char\***:
 			```C
+			char* szoveg = "Tesztszoveg";
 			printf("Hello World!");
 			```
 	- Konstans <típus>:
@@ -163,3 +164,129 @@ Az anyag négy részre oszklik:
 		- `log(x)`
 		- `round(x)`: kerekít
 		- `abs(x); fabs(y)`: $|x|; |y|; (x \in int, y \in double)$
+# A C alacsonyabb szintű, nehezebben megérthető részei
+
+Ez a rész jóval részletesebb lesz a többinél, nem kell aggódni.
+
+## **STRUKTÚRÁK**
+Hasonlítanak a magasabb szintű nyelvek objektumaira: egy változóba több, névvel ellátott és különböző típusú elemet lehet rakni, itt viszont nincsenek alfüggvények, konstruktorok, stb.  
+Egy struktúra létrehozása a következő módon történik:
+```C
+struct nev {
+	tipus1 elem1;
+	tipus2 elem2;
+	...
+}; // Végére pontosvessző!
+```
+Mostantól kezdve ezt a típust használhatjuk, ha típusnak `struct nev`-et használunk.
+Az elemekhez természetesen `nev.elem` szintakszissal lehet hozzáférni (pointer esetében máshogy, azt később említem)
+Amikor létrehozzuk a változót, ha a típusokat, és sorrendjüket is tudjuk, kapcsos zárójelben meg tudjuk adni a kezdőértékeket.  
+```C
+struct ember {
+	int kor;
+	char nem;
+};
+
+struct ember Adam;
+Adam.kor = 30;
+Adam.nem = 'M';
+
+struct ember Eva = {29, 'F'};
+```  
+Amennyiben deklaráláskor nem akarjuk kiírni mindig, hogy "struct", típust is definiálthatunk:
+```C
+typedef struct ember {
+	int kor;
+	char nem;
+} ember; // Ez a második elnevezés a típus valódi neve, KÖTELEZŐ megadni!
+
+ember Eva = {29,'F'}; // Ugyanúgy működik
+```
+
+Innentől kezdve ez a struktúra olyan, mint akármelyik másik változótípus: lehet függvényben paraméterként és return típusként használni, tömböt csinálhatunk belőle, és lehet neki pointere.  
+
+## **POINTEREK**
+Ez a C leghírhedtebb része, mert - habár szimpla fogalom - eléggé abszatrakt, és magas szintű nyelvekben nem lehet/kell ezekkel foglalkozni, de ha egyszer megértitek, akkor onnantól kezdve a nyelv (és ez a tantárgy) nem lesz nehéz.  
+  
+A pointer valójában csak egy szám, ami megmutatja, hol az érték, amit keresel. Olyan, mint egy tartalomjegyzék egyik eleme: látod, hogy az, amit keresel, hol van, de maga az elem nem tárolja az adatot magában, csak megmutatja, hol van. A pointer azt is tudja, hogy milyen típus (pl.: double, int) van a helyen, ahova mutat.
+
+**Szintaxis és szima pointerek**:  
+A pointer egy bizonyos típusú értékhez mutat, ezért a deklarálásnál ezt máris jelöljuk: `típus*` egy pointer-változó típusa. A csillag kötelező, de a helye a típus és a változó neve között szabadon választható:
+```C
+int* inthezMutat;
+double *doublehozMutat;
+float * floathozMutat;
+```
+
+A pointernek kell egy érték, természetesen. Ha egy változó helyét/pointerét szeretnénk megszerezni, egyszerűen rakunk egy `&` jelet a neve elé:
+```C
+int ertek;
+int* ertekHelye = &ertek;
+```
+Ezért van az, hogy amikor a `scanf_s` függvénnyel értéket olvasunk be a konzolból, `&`-t rakunk a neve elé. A függvény azt akarja tudni, hogy a beolvasott értéket *hova* rakja, ez pedig egy pointer feladata.
+```C
+int ertek;
+int *ertekHelye = &ertek;
+
+//A következő két sor ugyanazt csinálja:
+scanf_s("%d",&ertek);
+scanf_s("%d",ertekHelye);
+```
+
+Az jó, ha meg tudjuk szerezni egy változó/érték helyét, de hogy *módosítjuk* azt?  
+Erre szolgál `*` (ami miatt van a deklarációban), ami a fordítottját csinálja az `&`-nek: nem azt adja meg, hogy hol az érték, hanem azt, hogy mi az érték a megadott helyen:
+```C
+double ertek = 67.0;
+double ertekHelye = &ertek;
+
+//A következő két sor ugyanazt csinálja:
+printf("%lf\n",*ertekHelye);
+printf("%lf\n",ertek);
+
+//Nem csak az értéket, hanem JOBBÉRTÉKET kapunk vissza, ezért tudjuk azt módosítani:
+*ertekHelye = 69.0;
+
+printf("%lf\n",ertek); //69-et ír ki
+```
+
+Ennek gyakorlati haszna is van: pl.: egy függvény tudja módosítani a pointer helyén lévő értéket, és *ezért* adunk pointert a `scanf_s` függvénynek. Természetesen ilyen függvényt mi is tudunk írni:
+```C
+//Ez a függvény NEM ad vissza értéket, a paraméterként adott változót módosítja direkben
+void duplaz(double* ertek){
+	*ertek *= 2.0;
+}
+
+double teszt = 21.0;
+duplaz(&teszt);
+printf("%lf\n",teszt); //teszt értékét dupláztuk, 42.0-t ír ki
+```
+
+**Dinamikus tömbök**:  
+Azt már mondtam, hogy egy konstans (értsd: tudjuk az értéket már a fordításkor) elemszámú tömböt tudunk létrehozni, de mi van, ha a fordítás pillanatában nem tudjuk, hogy hány elemre van szükségünk?  
+Itt is pointer a megoldás, valamint a `stdlib.h` három legfontosabb függvénye: `malloc`, `calloc` és `free`
+- **malloc**: megadot neki, hogy milyen hosszú (hány byte) memóriát kérsz, és egy pointert kapsz vissza, ahol ez a blokk memória kezdődik:
+	```C
+	int* memoria = malloc(sizeof(int)); //Kapsz sizeof(int) = VS-ben 4 byte memóriát
+	*memoria = 96;
+	*memoria += 2;
+	// ...
+	free(memoria); // EZ KÖTELEZŐ
+	```
+- **calloc**: malloc, de két különbséggel:
+	- A memóriát lenullázza, mielőtt használod
+	- Azt kéri, hogy hány elemet kérsz, és milyen hosszú egy elem (ez pont jó tömböknél, tehát ezt a függvényt ajánlom azeretben)
+	```C
+	//Létrehozunk egy három elemű (0-2-ig menő indexű) tömböt
+	int* tombteszt = calloc(3,sizeof(int));
+	tombteszt[0] = 79;
+	tombteszt[2] = 28;
+	tombteszt[2]++;
+	tombteszt[1] = -986;
+
+	printf("%d\n",tombteszt[2]); // 29
+	
+	//...
+	free(tombteszt);
+	```
+- **free**: Akár `calloc`-kal, akár `malloc`-kar kértünk az oprendszertől memóriát, amikor abbahagytuk a használatát, fell kell szabadítanunk. Ahogy az előző példákban láthattátok, csak a pointert kell odaadni, mint paramétert a függvénynek.  
+	**CSAK MALLOC ÉS CALLOC ÁLTAL SZERZET MEMÓRIÁT KELL/SZABAD FELSZABADÍTANI**
