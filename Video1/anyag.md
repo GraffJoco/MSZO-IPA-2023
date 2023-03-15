@@ -206,9 +206,9 @@ ember Eva = {29,'F'}; // Ugyanúgy működik
 Innentől kezdve ez a struktúra olyan, mint akármelyik másik változótípus: lehet függvényben paraméterként és return típusként használni, tömböt csinálhatunk belőle, és lehet neki pointere.  
 
 ## **POINTEREK**
-Ez a C leghírhedtebb része, mert - habár szimpla fogalom - eléggé abszatrakt, és magas szintű nyelvekben nem lehet/kell ezekkel foglalkozni, de ha egyszer megértitek, akkor onnantól kezdve a nyelv (és ez a tantárgy) nem lesz nehéz.  
+Ez a C leghírhedtebb része, mert - habár szimpla fogalom - eléggé absztrakt, és magas szintű nyelvekben nem lehet/kell ezekkel foglalkozni, de ha egyszer megértitek, akkor onnantól kezdve a nyelv (és ez a tantárgy) nem lesz nehéz.  
   
-A pointer valójában csak egy szám, ami megmutatja, hol az érték, amit keresel. Olyan, mint egy tartalomjegyzék egyik eleme: látod, hogy az, amit keresel, hol van, de maga az elem nem tárolja az adatot magában, csak megmutatja, hol van. A pointer azt is tudja, hogy milyen típus (pl.: double, int) van a helyen, ahova mutat.
+A pointer valójában csak egy szám, ami megmutatja, hol az érték, amit keresel. Olyan, mint egy tartalomjegyzék egyik eleme: látod, a helyét annak, amit keresel, de maga az elem nem tárolja az adatot magában, csak megmutatja, hol van. A pointer azt is tudja, hogy milyen típus (pl.: double, int) van a helyen, ahova mutat.
 
 **Szintaxis és szima pointerek**:  
 A pointer egy bizonyos típusú értékhez mutat, ezért a deklarálásnál ezt máris jelöljuk: `típus*` egy pointer-változó típusa. A csillag kötelező, de a helye a típus és a változó neve között szabadon választható:
@@ -290,3 +290,72 @@ Itt is pointer a megoldás, valamint a `stdlib.h` három legfontosabb függvény
 	```
 - **free**: Akár `calloc`-kal, akár `malloc`-kar kértünk az oprendszertől memóriát, amikor abbahagytuk a használatát, fell kell szabadítanunk. Ahogy az előző példákban láthattátok, csak a pointert kell odaadni, mint paramétert a függvénynek.  
 	**CSAK MALLOC ÉS CALLOC ÁLTAL SZERZET MEMÓRIÁT KELL/SZABAD FELSZABADÍTANI**
+
+**Struktúrák pointerei**:  
+Ha (pl.: egy külső könyvtár miatt) nem egy struktúrához, hanem annak a pointeréhez van hozzáférésed, hogyan tudod megszerezni/módosítani az elemeit?  
+A `*`-gal lehet:
+```C
+ember Janos = {19, 'M'};
+ember* JanosHolVan = &Janos;
+
+*(JanosHolVan).kor++;
+```
+De valljuk be, ez eléggé csúnya, és nem egyértelmű, hogy mi történik. Ezért ennek az egyszerűsítésére létrehozták a `->` operátort: ugyanazt csinálja, mint a `.`, amikor egy struktúra eleméhez akarunk hozzáférni, de a struktúra helyett a struktúra pointere van előtte:
+```C
+JanosHolVan->kor++; //ugyanazt csinálja, de érthetőbb
+```
+Ebben a tárgyban ezt esély szerint nem kell majd használni, de következő félévben C++-ból igen.
+
+# Tippek és trükkök
+Ezeket nem feltétlenül kell tudni, de egyszerűbbé teheti az életed ZH-kon.  
+  
+**stdbool.h**:  
+A C-ben nincs *alapból* boolean (igen/nem) típus, de a "modern" C-ben (C99 óta) minden fordító ismeri a `stdbool.h` nevű könyvtárat, ami pont ezt implementálja:
+```C
+#include <stdbool.h>
+#include <stdio.h>
+
+int main() {
+	bool tesztvaltozo = true;
+	printf("%d\n",tesztvaltozó); //1-et ír ki
+
+	tesztvaltozo = false;
+	printf("%d\n",tesztvaltozo); //0-t ír ki
+}
+```
+  
+*Megj.: A stdbool szerint true == 1, tehát valami == true nem mindig a valós választ adja (C-ben akármilyen nem 0 érték, pl.: 35 is igaz!), de ezt kiírni pl.: ifben eleve felesleges*
+
+**stdint.h**:  
+Elfelejtetted, hogy melyik egész típus 2 byte hosszú? Nem kell aggódni, C99 óta van stdint! Ez fordítóspecifikus makrókkal garantálja, hogy egyszerűen használj olyan hosszal rendelkező egész típusokat, amilyeneket akarsz!
+```C
+#include <stdint.h>
+#include <stdio.h>
+
+int main() {
+	int16_t ketByteHosszu;
+	uint64_t nyolcBytosElojelNelkuli;
+	printf("%d, %d\n",sizeof(ketByteHosszu),sizeof(nyolcBytosElojelNelkuli)); // 2, 8
+}
+```
+
+Ha tudni akarod a max/min értéket, amit egy típus tud tárolni, arra is vannak makrók!
+pl.:
+| név | hossz | min | max |
+| --- | --- | --- | ---|
+| int16_t | 16 bit / 2 byte | INT16_MIN | INT16_MAX |
+| uint64_t | 64 bit / 8 byte | UINT64_MIN (előjel nélküli, tehát 0) | UINT64_MAX |  
+  
+**random számok használata**:  
+Ha kell egy random szám, azt hogyan lehet megszerezni?  
+A `stdlib.h` (amit már így is szinte biztos használsz) erre is tartalmaz egy függvényt, a `rand()`-ot.  
+Ez a függvény eléggé egyszerű: 0 és `RAND_MAX` között ad vissza egy random (egész) értéket. Ebből viszont hogy csinálunk véletlenszerű számot egy random intervallumba?  
+A maradék (`%`) művelet erre tökéletes:  
+`rand() % valami` 0 és valami - 1 között ad vissza egy random számot.  
+Ez már csak egy konstans hozzáadásával el kell tolni, és megvan az $[x; y[$ közötti random számunk!
+```C
+rand() % (x - y) + x
+```
+
+# Végszó
+Ez (dióhélyban) az első IPA zárthelyi gyakorlati anyaga. Remélem, hogy hasznos volt, és tudtatok tanulni belőle. Sok szerencsét és sikeres zárthelyit kívánok nektek!
