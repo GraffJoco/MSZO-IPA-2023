@@ -208,7 +208,7 @@ Innentől kezdve ez a struktúra olyan, mint akármelyik másik változótípus:
 ## **POINTEREK**
 Ez a C leghírhedtebb része, mert - habár szimpla fogalom - eléggé absztrakt, és magas szintű nyelvekben nem lehet/kell ezekkel foglalkozni, de ha egyszer megértitek, akkor onnantól kezdve a nyelv (és ez a tantárgy) nem lesz nehéz.  
   
-A pointer valójában csak egy szám, ami megmutatja, hol az érték, amit keresel. Olyan, mint egy tartalomjegyzék egyik eleme: látod, a helyét annak, amit keresel, de maga az elem nem tárolja az adatot magában, csak megmutatja, hol van. A pointer azt is tudja, hogy milyen típus (pl.: double, int) van a helyen, ahova mutat.
+A pointer valójában csak egy szám, ami megmutatja, hol található az érték a memóriában, amit keresel. Olyan, mint egy tartalomjegyzék egyik eleme: látod, a helyét annak, amit keresel, de maga az elem nem tárolja az adatot magában, csak megmutatja, hol van. A pointer azt is tudja, hogy milyen típus (pl.: double, int) van a helyen, ahova mutat.
 
 **Szintaxis és szima pointerek**:  
 A pointer egy bizonyos típusú értékhez mutat, ezért a deklarálásnál ezt máris jelöljuk: `típus*` egy pointer-változó típusa. A csillag kötelező, de a helye a típus és a változó neve között szabadon választható:
@@ -253,7 +253,7 @@ Ennek gyakorlati haszna is van: pl.: egy függvény tudja módosítani a pointer
 ```C
 //Ez a függvény NEM ad vissza értéket, a paraméterként adott változót módosítja direkben
 void duplaz(double* ertek){
-	*ertek *= 2.0;
+	*ertek *= 2.0;   //itt a 2. * szorzás
 }
 
 double teszt = 21.0;
@@ -284,7 +284,7 @@ Itt is pointer a megoldás, valamint a `stdlib.h` három legfontosabb függvény
 	tombteszt[1] = -986;
 
 	printf("%d\n",tombteszt[2]); // 29
-	
+	//* a tömböknél nem kell, mert az már pointer
 	//...
 	free(tombteszt);
 	```
