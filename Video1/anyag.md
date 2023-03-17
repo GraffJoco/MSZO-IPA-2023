@@ -24,7 +24,7 @@ Az anyag négy részre oszklik:
 	printf("Hello World!");
 	```
 - **Függvények:**
-	- A matekhoz hasonlóan **paraméter**(ek) segítségével dolgozik, és (általában) egy **értéket ad** vissza
+	- A matematikai függvényekhez hasonlóan **paraméter**(ek) segítségével dolgozik, és (általában) egy **értéket ad** vissza
 	- A függvényeket a változókhoz hasonlóan kell deklarálni (a típusok a követekző részben el lesznek magyarázva):
 		```C
 		típus név(típus1 paraméter1, ...) {
@@ -169,7 +169,8 @@ Az anyag négy részre oszklik:
 Ez a rész jóval részletesebb lesz a többinél, nem kell aggódni.
 
 ## **STRUKTÚRÁK**
-Hasonlítanak a magasabb szintű nyelvek objektumaira: egy változóba több, névvel ellátott és különböző típusú elemet lehet rakni, itt viszont nincsenek alfüggvények, konstruktorok, stb.  
+A struktúrakat akkor használjuk, ha saját egy összetett típust akarunk létre hozni.
+Hasonlítanak a magasabb szintű nyelvek objektumaira: egy változóba több, névvel ellátott és különböző típusú elemet lehet rakni, itt viszont nincsenek alfüggvények, konstruktorok, stb. mint a C++-ban.  
 Egy struktúra létrehozása a következő módon történik:
 ```C
 struct nev {
@@ -193,7 +194,7 @@ Adam.nem = 'M';
 
 struct ember Eva = {29, 'F'};
 ```  
-Amennyiben deklaráláskor nem akarjuk kiírni mindig, hogy "struct", típust is definiálthatunk:
+Nagyobb felhasználásái kört érünk el, és mellesleg deklaráláskor nem kel kiírni, hogy "struct", ha így definiáljuk:
 ```C
 typedef struct ember {
 	int kor;
