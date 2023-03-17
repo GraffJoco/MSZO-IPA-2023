@@ -194,7 +194,7 @@ Adam.nem = 'M';
 
 struct ember Eva = {29, 'F'};
 ```  
-Nagyobb felhasználásái kört érünk el, és mellesleg deklaráláskor nem kel kiírni, hogy "struct", ha így definiáljuk:
+Nagyobb felhasználásái kört érünk el, és mellesleg deklaráláskor nem kel kiírni, hogy "struct", ha típusként definiáljuk:
 ```C
 typedef struct ember {
 	int kor;
@@ -254,7 +254,7 @@ Ennek gyakorlati haszna is van: pl.: egy függvény tudja módosítani a pointer
 ```C
 //Ez a függvény NEM ad vissza értéket, a paraméterként adott változót módosítja direkben
 void duplaz(double* ertek){
-	*ertek *= 2.0;   //itt a 2. * szorzás
+	*ertek *= 2.0;   //itt a második * szorzás
 }
 
 double teszt = 21.0;
