@@ -1,0 +1,12 @@
+# This file is used internally by FFMPEG.
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1342159004_3403783333_223132457.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_190800790_3777008838.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_89360857_1059958809.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_2752855958_1271224094.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_519133342_3954221548.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_125286499_1377687767.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_2908710063_3953464920.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_2526496290_134189569.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_82325916_2481235921.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_1165445975_3314897013.mp4'
+file 'file:D:/code/manim/IPA/MSZO-IPA-2023/Video1/C egyedi reszei/media/videos/C egyedi reszei/720p30/partial_movie_files/Cegyedi/1353618911_190800790_1549302373.mp4'

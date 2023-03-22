@@ -1,3 +1,6 @@
 *.exe
-*.py
 makefile
+*.png
+*.jpg
+*.mp4
+*.svg
