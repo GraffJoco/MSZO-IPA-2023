@@ -5,3 +5,4 @@ makefile
 *.mp4
 *.svg
 partial_movie_file_list.txt
+*.tex
