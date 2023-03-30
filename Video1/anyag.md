@@ -164,6 +164,7 @@ Az anyag négy részre oszklik:
 		- `log(x)`
 		- `round(x)`: kerekít
 		- `abs(x); fabs(y)`: $|x|; |y|; (x \in int, y \in double)$
+	- `time.h` : Tartalmazza a time függvényt
 # A C alacsonyabb szintű, nehezebben megérthető részei
 
 Ez a rész jóval részletesebb lesz a többinél, nem kell aggódni.
@@ -307,6 +308,18 @@ JanosHolVan->kor++; //ugyanazt csinálja, de érthetőbb
 ```
 Ebben a tárgyban ezt esély szerint nem kell majd használni, de következő félévben C++-ból igen.
 
+**random számok használata**:  
+Ha kell egy random szám, azt hogyan lehet megszerezni?  
+A `stdlib.h` (amit már így is szinte biztos használsz) erre is tartalmaz egy függvényt, a `rand()`-ot. 
+`srand((unsigned int)time(NULL))` beírása után a random szám generálása idő függő lesz, ami sohasem ugyanaz tehát nekünk megfelelő
+Ez a függvény eléggé egyszerű: 0 és `RAND_MAX` között ad vissza egy random (egész) értéket. Ebből viszont hogy csinálunk véletlenszerű számot egy random intervallumba?  
+A maradék (`%`) művelet erre tökéletes:  
+`rand() % valami` 0 és valami - 1 között ad vissza egy random számot.  
+Ez már csak egy konstans hozzáadásával el kell tolni, és megvan az $[x; y[$ közötti random számunk!
+```C
+rand() % (x - y + 1) + x
+```
+
 # Tippek és trükkök
 Ezeket nem feltétlenül kell tudni, de egyszerűbbé teheti az életed ZH-kon.  
   
@@ -347,16 +360,7 @@ pl.:
 | int16_t | 16 bit / 2 byte | INT16_MIN | INT16_MAX |
 | uint64_t | 64 bit / 8 byte | UINT64_MIN (előjel nélküli, tehát 0) | UINT64_MAX |  
   
-**random számok használata**:  
-Ha kell egy random szám, azt hogyan lehet megszerezni?  
-A `stdlib.h` (amit már így is szinte biztos használsz) erre is tartalmaz egy függvényt, a `rand()`-ot.  
-Ez a függvény eléggé egyszerű: 0 és `RAND_MAX` között ad vissza egy random (egész) értéket. Ebből viszont hogy csinálunk véletlenszerű számot egy random intervallumba?  
-A maradék (`%`) művelet erre tökéletes:  
-`rand() % valami` 0 és valami - 1 között ad vissza egy random számot.  
-Ez már csak egy konstans hozzáadásával el kell tolni, és megvan az $[x; y[$ közötti random számunk!
-```C
-rand() % (x - y) + x
-```
+
 
 # Végszó
 Ez (dióhélyban) az első IPA zárthelyi gyakorlati anyaga. Remélem, hogy hasznos volt, és tudtatok tanulni belőle. Sok szerencsét és sikeres zárthelyit kívánok nektek!
