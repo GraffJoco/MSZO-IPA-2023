@@ -23,6 +23,14 @@ Az anyag négy részre oszklik:
 	A = 50;
 	printf("Hello World!");
 	```
+- **Változók**: Elment egy értéket, amit használhatunk és módosíthatunk
+	Több típusa van, erről később
+	```C
+	int valtozo1 = 0;
+	valtozo1 = 2;
+	double valtozo2 = valtozo1 + 1
+	printf("%i",valtozo2); //3-at ír ki 
+	```
 - **Függvények:**
 	- A matematikai függvényekhez hasonlóan **paraméter**(ek) segítségével dolgozik, és (általában) egy **értéket ad** vissza
 	- A függvényeket a változókhoz hasonlóan kell deklarálni (a típusok a követekző részben el lesznek magyarázva):
@@ -57,7 +65,10 @@ Az anyag négy részre oszklik:
 - **Feltételek és ciklusok**:
 	- **if**: ha a zárójelben lévő érték igaz (nem 0), akkor a mögötte lévő utasítást vagy kódblokkot lefuttatja:  
 		```C
-		if (x == 5) printf("Az x értéke 5!"); //Egy utasításos if
+		if (x == 5) {
+			printf("Az x értéke 5!");
+		}
+		else printf("Az x értéke NEM 5!"); 	//Egy sor esetén nem muszáj a {}
 		```
 	- **switch**: egy értéket több potenciális értékhez hasonlít, feltétel után szinte mindig break:
 		```C
@@ -81,6 +92,15 @@ Az anyag négy részre oszklik:
 			x++;
 		}
 		printf("Az x mostmár 5!\n");
+		```
+	- **do while**: egyszer biztosan lefuttatja a kódot, utána úgy működik mint a while:
+		```C
+		int x = 0;
+		do {
+			printf("Kérek egy 5-öst!");
+			scanf_s("%i",&x);
+		} while(x != 5);     //kell a ;
+		printf("Az x mostmár 5!");
 		```
 	- **for**: a gyakoribb ciklus, habár a C-ben egy módosított *while*nak felel meg:  
 		```C  
