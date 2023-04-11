@@ -1,4 +1,8 @@
 # Pár tesztfeladat a gyakorláshoz
+## Útmutató
+Ezek a feladatok segítenek egyes fogalmakat begyakorolni, növekvő segítséggel.  
+Ezek közül csak az utolsó (4. feladat) feladat ZH szintű.  
+Az egyes feladatok megoldásait a feladat\<n>.c fájlban lehet találni.
 ## 1.: 3n + 1
 Olvass be egy (pozitív egész) számot a konzolból, és a számon futtasd le a következő algoritmust!
 - Ha a szám páros, felezd
@@ -20,14 +24,12 @@ Utána írd ki külön-külön sorozban a következőket:
 ezesetben $ n \to \infty$ helyett $n$ egyenlő a paraméterrel  
 Ebből a függvényből csinálj egy másodikat, ami $e^k$-t számolja ki!
 Azoknak, akiknek nem jut eszébe:  
-$$e = \lim_{n \to \infty} (1 + {1\over n})^n$$
 $$ e^k = \lim_{n \to \infty} (1 + {k\over n})^n $$
 (Ebben a feladatban $n \in \N^+; k \in \R$)  
 Kérj be két számot a felhasználótól, és írd ki $e^k$ közelítését! Addig kérj $n$ értéket, amíg nem felel meg a szabályoknak!  
 *Bónusz pontok, ha NEM használod a <math.h> könyvtárat!*  
 
-## 4.: n-ed fokú polinóm deriválása
-**FIGYELEM: ez messze a legnehezebb feladat**  
+## 4.: n-ed fokú polinóm deriválása 
 Kérj a felhasználótól egy pozitív egész számot, hogy hanyadfokú polinómot akar deriválni ($a_1x^n + a_2x^{n-1} + ... + a_n$). Hozz létre egy $n$ elemű tömböt, amibe tárolni fogod az elemeket! Utána egyesével kérd be az elemeket, és töltsd fel a tömböt (először $a_1$-et, utána $a_2$-t, stb.-t kérd ebben a sorrendben!)  
 Mikor fel van töltve a tömb, írd ki `a1 * x^(n) + a2 * x^(n-1) ...` formátumbann utána külön sorban csináld ezt meg a deriválttal is!  
 Ha (valahogyan) nem jut eszedbe:

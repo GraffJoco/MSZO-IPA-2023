@@ -28,7 +28,7 @@ Az anyag négy részre oszklik:
 	```C
 	int valtozo1 = 0;
 	valtozo1 = 2;
-	double valtozo2 = valtozo1 + 1
+	double valtozo2 = valtozo1 + 1;
 	printf("%i",valtozo2); //3-at ír ki 
 	```
 - **Függvények:**
@@ -68,7 +68,7 @@ Az anyag négy részre oszklik:
 		if (x == 5) {
 			printf("Az x értéke 5!");
 		}
-		else printf("Az x értéke NEM 5!"); 	//Egy sor esetén nem muszáj a {}
+		else printf("Az x értéke NEM 5!"); 	//Egy utasítás esetén nem muszáj a {}
 		```
 	- **switch**: egy értéket több potenciális értékhez hasonlít, feltétel után szinte mindig break:
 		```C
@@ -93,6 +93,7 @@ Az anyag négy részre oszklik:
 		}
 		printf("Az x mostmár 5!\n");
 		```
+		Itt $x$-et növeljük a kódblokban `++` operátorral, amíg nem lesz egyenlő 5-tel.
 	- **do while**: egyszer biztosan lefuttatja a kódot, utána úgy működik mint a while:
 		```C
 		int x = 0;
@@ -102,6 +103,7 @@ Az anyag négy részre oszklik:
 		} while(x != 5);     //kell a ;
 		printf("Az x mostmár 5!");
 		```
+		Itt a `scanf_s` függvény használatával addig kérünk egy egész számot a konzolból (és ezt $x$-be rakjuk), amíg 5-öt nem kapunk  
 	- **for**: a gyakoribb ciklus, habár a C-ben egy módosított *while*nak felel meg:  
 		```C  
 		for (ciklus előtt; feltétel; minden futás után) {
@@ -110,11 +112,14 @@ Az anyag négy részre oszklik:
 		```  
 		Az előző példa *for*ral egyszerűbb:  
 		```C
+		int y = 0;
 		for (int x = 0; x != 5; x++) {
 			printf("Az x még nem 5!\n");
+			y++;
 		}
-		printf("Az x mostmár 5!");
+		printf("Az y mostmár 5! x a forban volt, utána már nem létezik");
 		```  
+		*(Megj.: A `for` zárójele is a kódblokk része, tehát a benne létrehozott változók a blokk után nem léteznek, ezért az utolsó `printf` utasítás lefutásakor a `for`on kívül létrehozott $y$ létezik, a belül létrehozott $x$ már nem)*  
 - **Megjegyzés:**
 	- `//` ha egysoros
 	- `/*` és `*/` között akármilyen hosszú
@@ -124,30 +129,26 @@ Az anyag négy részre oszklik:
 - **Típusok:**
 	- Háttér: a számítógépnek mindig tudnia kell, hogy milyen típussal dolgozik, és az mekkora (a memóriában), ezért a C, és számos más nyelv különböző funkciójú, kapacitású, és hosszú típussal dolgozik
 	- Egy kisebb típus kevesebb értéket tud tárolni és pontatlanabb, de memória esetében kevesebb helyet foglal. Sebessége nagyobb típushoz képest az architektúrától függ
+	- Az egyes típusoknak vannak kódjai (pl.: `int`-nél `%d`), ezeket használjuk a `printf` és `scanf_s` függvényekben  
 	- Egész típusok (integer), aminek vannak különböző méretű változatai (mindegyik $2^n$ különböző értéket tud tárolni, n a bitek, nem bytok száma):
-		- char: 1 byte
-		- short: 2 byte
-		- **int**: *általában* 4 byte (VS-ben az, ZH-n nem kell emiatt aggódni)
-		- long (int): 4 byte
-		- **long long (int)**: 8 byte
+		- char (%hhd, %c ha a karaktert, nem a számot írjuk ki): 1 byte
+		- short (%hd): 2 byte
+		- **int** (%d): *általában* 4 byte (VS-ben az, ZH-n nem kell emiatt aggódni)
+		- long (int) (%ld): 4 byte
+		- **long long (int)** (%lld): 8 byte
 		- unsigned <típus>: ugyanolyan hosszú, de csak természetes számokat tud, viszont kétszer annyit, mint előjeles változata:
 			```C
 			unsigned long long man = 76438932;
 			```
 	- Nemegész típusok, ú.n. lebegőpontos típusok, nem 100% pontosak, viszont ez a legtöbb esetben nem számít sokat:
-		- float: 4 bytos
-		- **double**: 8 bytos, ez az ajánlott típus
-	- Tömbök és szöveg:
-		- Nem valódi típusok, hanem pointerek, de megemlítendő, hogy van
+		- float (%f): 4 bytos
+		- **double** (%lf): 8 bytos, ez az ajánlott típus
+	- Tömbök:
+		- Nem valódi típus, hanem pointerek, de megemlítendő, hogy van, és később részletesebben fogom őket leírni
 		- Konstanshosszú tömböt úgy lehet deklarálni, mint más nyelvben:
 			```C
 			int tomb[5] = {0, 1, 2, 3, 4};
 			tomb[3] = 97;
-			```
-		- Szöveget, ha nem módosítjuk, is használhatjuk normálisan (idézőjelben), viszont string helyett a típusa **char\***:
-			```C
-			char* szoveg = "Tesztszoveg";
-			printf("Hello World!");
 			```
 	- Konstans <típus>:
 		- Akármilyen típussal működik, de a deklarálásnál KÖTELEZŐ kezdőértéket adni, és utána módosíthatatlan:
@@ -156,7 +157,7 @@ Az anyag négy részre oszklik:
 			```
 - **Főfüggvény:**
 	- itt kezdődik a program, ha futtatható (exe) formátummal dolgozunk, **kötelező** minden programban
-	- int típusú, main a neve, három féle módon lehet a parétereket megadni:
+	- int típusú, main a neve, három féle módon lehet a paramétereket megadni:
 		```C
 		int main() {}						//Leggyakoribb iteráció
 		int main(void) {}					//Ugyanaz, mint az előző
@@ -176,7 +177,9 @@ Az anyag négy részre oszklik:
 	- `stdio.h`: A felhasználóval való kommunikáció:
 		- `printf(szöveg,...)`: formázott kiírás a konzolba
 		- `scanf_s(forma, &változó1, ...)`: formázott beolvasás
-	- `stdlib.h`: A C legfontosabb, főleg pointerekkel kapcsolatos függvényeit tartalmazza, ezért csak később fogom részletezni
+	- `stdlib.h`:
+		- `malloc`, `calloc` és `free`: pointerfüggvények, ezeket később fogom részletezni
+		- `rand` és `srand`: random számok függvényei
 	- `math.h`: Matek függvények
 		- `sqrt(x)`: $\sqrt x$
 		- `pow(x,y)`: $x^y$
@@ -184,6 +187,8 @@ Az anyag négy részre oszklik:
 		- `log(x)`
 		- `round(x)`: kerekít
 		- `abs(x); fabs(y)`: $|x|; |y|; (x \in int, y \in double)$
+		- ha az `include` előtt az van írva, hogy `#define _USE_MATH_DEFINES`, akkor konstansok is:  
+			pl.: `M_PI`, `M_E`
 	- `time.h` : Tartalmazza a time függvényt
 # A C alacsonyabb szintű, nehezebben megérthető részei
 
@@ -215,7 +220,7 @@ Adam.nem = 'M';
 
 struct ember Eva = {29, 'F'};
 ```  
-Nagyobb felhasználásái kört érünk el, és mellesleg deklaráláskor nem kel kiírni, hogy "struct", ha típusként definiáljuk:
+Ha nem akarjuk deklaráláskor kiírni, hogy `struct`, akkor ezt is lehet csinálni (habár nem ajánlott ZH-n):
 ```C
 typedef struct ember {
 	int kor;
@@ -288,12 +293,16 @@ Azt már mondtam, hogy egy konstans (értsd: tudjuk az értéket már a fordít�
 Itt is pointer a megoldás, valamint a `stdlib.h` három legfontosabb függvénye: `malloc`, `calloc` és `free`
 - **malloc**: megadot neki, hogy milyen hosszú (hány byte) memóriát kérsz, és egy pointert kapsz vissza, ahol ez a blokk memória kezdődik:
 	```C
-	int* memoria = malloc(sizeof(int)); //Kapsz sizeof(int) = VS-ben 4 byte memóriát
+	int* memoria = (int*)malloc(sizeof(int)); //Kapsz sizeof(int) = VS-ben 4 byte memóriát
 	*memoria = 96;
 	*memoria += 2;
 	// ...
 	free(memoria); // EZ KÖTELEZŐ
 	```
+	Az első sor a következőt csinálja:  
+		- `int* memoria`: létrehozza a változót, ami inthez mutat  
+		- `(int*)`: a $malloc$ fügvény `void *`-ot ad vissza, ez mondja a fordítónak, hogy `int*`-ként kezelje  
+		- `malloc(sizeof(int))`: $sizeof(int)$ (= 4) byteot kérünk az operációs rendszertől, a $malloc$ függvényt hívva
 - **calloc**: malloc, de két különbséggel:
 	- A memóriát lenullázza, mielőtt használod
 	- Azt kéri, hogy hány elemet kérsz, és milyen hosszú egy elem (ez pont jó tömböknél, tehát ezt a függvényt ajánlom azeretben)
@@ -320,7 +329,7 @@ A `*`-gal lehet:
 ember Janos = {19, 'M'};
 ember* JanosHolVan = &Janos;
 
-*(JanosHolVan).kor++;
+(*JanosHolVan).kor++;
 ```
 De valljuk be, ez eléggé csúnya, és nem egyértelmű, hogy mi történik. Ezért ennek az egyszerűsítésére létrehozták a `->` operátort: ugyanazt csinálja, mint a `.`, amikor egy struktúra eleméhez akarunk hozzáférni, de a struktúra helyett a struktúra pointere van előtte:
 ```C
@@ -338,6 +347,20 @@ A maradék (`%`) művelet erre tökéletes:
 Ez már csak egy konstans hozzáadásával el kell tolni, és megvan az $[x; y[$ közötti random számunk!
 ```C
 rand() % (x - y + 1) + x
+```
+Először viszont kell egy "seed"-et adni a számgenerátornak, amit felhasználna hozza létre a véletlen(nek tűnő) számokat.  
+A legegyszerűbb megoldása ennek az, hogy a mostani időt -mint számot- használjuk fel ehhez:  
+```C
+#include <stdlib.h>
+#include <time.h>
+
+int main() {
+	/*srandnak adjuk a mostani idő számát (eltelt másodpercek 1970.1.1 óta), és mivel ez minden futáskor más, a számok randomnak tűnnek*/
+	srand(time(NULL));
+	
+	//Innentől használható
+	int teszt = rand();
+}
 ```
 
 # Tippek és trükkök
