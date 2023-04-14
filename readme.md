@@ -7,11 +7,11 @@
   
 *(Megj.: A ZH-k a 9., és 14. héten vannak, a videók azért pár héttel azelőtt készülnek, hogy hátha abból tud a hallgató magától is gyakorolni a főkonzultációk előtt)*  
   
-## Mostani státusza a konzultációnak
-- Első videó kész van
-
 ## Hallgatóknak segítség a repo navigálásához
 - Ha a fájlok nem láthatóak, nyomjatok a `Browse code` gombra
 - Első konzultáció:
     - A ZH szöveges anyaga a $Video1/anyag.md$ fájl
-    - Pár segítőfeladat is van a $Video1/feladatok$ mappában. Itt a $feladatok.md$ fájl írja le a feladatot, $feladat<n>.c$ pedig egy megoldása
+    - Pár segítőfeladat is van a $Video1/feladatok$ mappában. Itt a $feladatok.md$ fájl írja le a feladatot, $feladat(n).c$ pedig egy megoldása
+
+## Mostani státusza a konzultációnak
+- Első videó kész van

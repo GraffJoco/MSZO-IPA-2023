@@ -344,9 +344,16 @@ A `stdlib.h` (amit már így is szinte biztos használsz) erre is tartalmaz egy 
 Ez a függvény eléggé egyszerű: 0 és `RAND_MAX` között ad vissza egy random (egész) értéket. Ebből viszont hogy csinálunk véletlenszerű számot egy random intervallumba?  
 A maradék (`%`) művelet erre tökéletes:  
 `rand() % valami` 0 és valami - 1 között ad vissza egy random számot.  
-Ez már csak egy konstans hozzáadásával el kell tolni, és megvan az $[x; y[$ közötti random számunk!
+Itt egy pár algoritmus, amire ezt a tudást fel lehet használni:
 ```C
-rand() % (x - y + 1) + x
+//Random egész [x; y] tartományban:
+rand() % (x - y + 1) + x;
+    
+//Random double [0; 1] között
+(double)rand() / RAND_MAX;
+    
+//Random double [x; y] között
+(double) rand() / RAND_MAX * (x - y) + x;
 ```
 Először viszont kell egy "seed"-et adni a számgenerátornak, amit felhasználna hozza létre a véletlen(nek tűnő) számokat.  
 A legegyszerűbb megoldása ennek az, hogy a mostani időt -mint számot- használjuk fel ehhez:  
