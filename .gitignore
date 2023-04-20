@@ -6,3 +6,6 @@ makefile
 *.svg
 partial_movie_file_list.txt
 *.tex
+*.aup3
+*.mp3
+*.ogg
