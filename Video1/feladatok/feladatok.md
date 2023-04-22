@@ -68,6 +68,7 @@ Implementáld a következő függvényeket:
 $$plus(\underline{v_1}, \underline{v_2}) \to \underline{v_1} + \underline{v_2}$$
 Ezt csináld meg kivonással `minus` néven is, valamint csinálj egy `scale` skalárral szoró, egy `cross` vektoriális szorzással (Ezek mind vektorokból és doubleből csinálnak vektort)!  
 Csinálj még egy `scalar` skalárszorzó és egy `length` függvényt is, ami double-t ad vissza!  
+Csinálj egy kiíró függvéynt is, ami egy vektort kiír $\{v_x; v_y; v_z\}$ formátumban!  
 Utána csinálj egy egyszerű vektoros számológépet!  
 - Kérj két vektorhoz értékeket ($x_1, y_1, z_1, x_2, y_2, z_2$), amiket vektorokként fogsz kezelni ( $v_1, v_2$)!  
 - Kérj egy karaktert, hogy mit fogsz velük csinálni:
