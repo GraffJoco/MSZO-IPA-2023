@@ -10,8 +10,8 @@
 ## Hallgatóknak segítség a repo navigálásához
 - Ha a fájlok nem láthatóak, nyomjatok a `Browse code` gombra
 - Első konzultáció:
-    - A ZH szöveges anyaga a $Video1/anyag.md$ fájl
-    - Pár segítőfeladat is van a $Video1/feladatok$ mappában. Itt a $feladatok.md$ fájl írja le a feladatot, $feladat(n).c$ pedig egy megoldása
+    - A ZH szöveges anyaga a $ZH1/anyag.md$ fájl
+    - Pár segítőfeladat is van a $ZH1/feladatok$ mappában. Itt a $feladatok.md$ fájl írja le a feladatot, $feladat(n).c$ pedig egy megoldása
 
 ## Mostani státusza a konzultációnak
 - Első videó kész van
