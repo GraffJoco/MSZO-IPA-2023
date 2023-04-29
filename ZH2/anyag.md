@@ -45,9 +45,11 @@ char* pufferesDinamikusString = malloc(hossz); //Dinamikus tömb, free-ről meg 
 ### **strnlen_s**
 
 A szöveg hosszát adja vissza. Az `strlen` függvény biztonságos verziója, használata a következő:  
+
 ```C
 size_t strnlen_s(const char* str, size_t hossz);
 ```
+
 *(`size_t`-től nem kell megijedni, csak egy egész típus, ugyanúgy szám, mint pl.: a long long vagy az int)*  
 
 - $str$ természetesen a szövegünk, amit extra karakterek (&) nélkül adunk meg  
@@ -91,4 +93,89 @@ int main() {
 
     strcpy(pufStr, binstr);
 }
+```
+
+### **strcat_s, strncat_s**
+
+A szövegek összeadása közel sem olyan egyszerű a C-ben, mint más nyelvekben, ezért ezt most részletesen fogom leírni.  
+  
+Először nem néz ki túl nehéznek:
+
+```C
+strcat(A, B); // A += B más nyelvekben
+
+//"Biztonságos" verziók, amiket mi fogunk használni
+strcat_s(char* A, size_t AMerete, const char* B);
+strncat_s(char* A, size_t AMerete, const char* B, size_t BbolHanyBytot);
+```
+
+De van egy probléma: ha nincsen A-ban legalább `strlen(B)` használatlan byte, akkor kicímzünk. Természetesen van az strcat-nek biztonságos verziója, DE ez azt jelenti, hogy amikor kicímezne, akkor onnantól levágja a szöveg végét:  
+
+```C
+char A[10];
+strcpy(A, "Hello, ");
+const char* B = "World";
+strcat_s(A, 10, B);
+
+printf("%s", A);
+```
+
+Ez a program fut, de az output hibás lesz (maga a hiba esetfüggő, néha nincs hely, és hiányzik a 0 karakter, néha a string részei vannak levágva), ezt hogyan oldjuk meg?  
+  
+Természetesen több elfogadható megoldás van, a legegyszerűbbhöz csak egy szimpla kérdést kell feltenni: Baj az, ha $A$-nak több helyet adunk a RAM-ban, mint kellene?  
+Egyszerű a válasz: **NEM, adhatunk neki több helyet, mint amennyit használ!**  
+Adjunk neki elfogaható mennyiségű bytot, ami több, mint amire szükségünk lesz, és abból baj nem nagyon lehet. Kis kódot írunk modern gépen, kit érdekel, ha 1 KB-tal többet foglal a progamunk, mint ami optimális lenne?  
+Esetfüggő, hogy mennyit kell, de mondjuk egy nem nagy stringnek lehet 50-1000 bytot adni. Itt egy módosítása az előző kódnak, ami működik:  
+
+```C
+char A[1024];
+strcpy(A, "Hello, ");
+const char* B = "World";
+strcat_s(A, 10, B);
+
+printf("%s", A);
+```
+
+Probléma megoldva!  
+Ezt nem kell *mindig* csinálni, de ha változó hosszú a string kimenet, akkor így egyszerűen el lehet kerülni pár nagyon csúnya kicímzést.  
+
+### **sprintf_s**  
+
+Ez (személyes véleményem szerint) a leghasznosabb stringfüggvény (`strlen` kivételével): Ugyanúgy írhatsz stringet, mint ahogy a konzolba írnál.  
+
+A függvény a `printf` paraméterek előtt kettő stringparamétert kér, a többi azonos:  
+
+```C
+sprintf_s(char* string, size_t strMeret, char* szoveg, ...);
+```
+
+Itt egy példa:
+
+```C
+double pi = 3.14159;
+char* pistr = malloc(16); // Nagyobb a kimenetnél, a biztonság kedvéért
+char* valodipistr = malloc(16);
+
+sprintf_s(pistr, 16, "%lf.2", pi); // pistr = "3.14"
+sprintf_s(pistr, 16, "%lf.0", pi); // valodipistr = "3"
+
+free(pistr);
+free(valodipistr);
+```
+
+### **stringből számérték**
+
+Mi van, ha stringből akarsz számot csinálni? Erre vannak függvények természetesen, de nem a `string.h`-ban, hanem a `stdlib.h`-ban!  
+Sok van belőlük, de itt vannak a fontosak:  
+| típus | függvény |
+| --- | --- |
+| int | atoi |
+| long long (int) | atoll |
+| double | atof |
+
+Például:
+
+```C
+long long man = atoll("54321");
+printf("%lld", man); //54321
 ```
