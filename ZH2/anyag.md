@@ -156,8 +156,8 @@ double pi = 3.14159;
 char* pistr = malloc(16); // Nagyobb a kimenetnél, a biztonság kedvéért
 char* valodipistr = malloc(16);
 
-sprintf_s(pistr, 16, "%lf.2", pi); // pistr = "3.14"
-sprintf_s(pistr, 16, "%lf.0", pi); // valodipistr = "3"
+sprintf_s(pistr, 16, ".2%lf", pi); // pistr = "3.14"
+sprintf_s(pistr, 16, ".0%lf", pi); // valodipistr = "3"
 
 free(pistr);
 free(valodipistr);
