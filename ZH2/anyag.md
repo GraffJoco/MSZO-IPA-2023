@@ -178,4 +178,172 @@ Például:
 ```C
 long long man = atoll("54321");
 printf("%lld", man); //54321
+```  
+  
+# **Fájlok**
+
+## Alapok  
+
+A fájlkezelés a C-ben változó nehézséggel rendelkezik attól függően, hogy beolvasunk, vagy kiírunk: fájlt írni egyszerű, beolvasni nem az, ugyanis az olvasáshoz dinamikus hosszal rendelkező stringekkel kell dolgozni.  
+
+A fájlprotokoll a `stdio.h` könyvtár része, tehát nem kell importálni még egy könyvtárat.  
+
+A fájl egy pointerobjektummal működik, a `FILE*` típussal. Egy fájl beolvasásához a `fopen_s` függvényt használjuk, melynek az első argumentuma a fájl helyének egy stringje, a másik is egy string, ami a kódja a beolvasás/írás típusának (ez nem az összes, de ezek a fontosak, itt is csak a w/r-t, és bináris verzióját kell tudni):  
+
+| kód | "w" | "r" | "a" | "wb" | "rb" | "ab" |
+| --- | :-: | :-: | :-: | :-: | :-: | :-: |
+| jelentés | Fájl írása | Fájl olvasás | Fájl végére írás | Fájl írása bináris módban | Fájl olvasása binráis módban | Fájl végére írás bináris módban |
+| Kell a fájlnak léteznie? | | X | | | X | |
+
+A fájl helye, mint argumentum lehet relatív (az exe mappájához képest) vagy abszolút (egész fájlhelyet kiírjuk), ezt automatikusan tudja, de fontos megjegyezni, hogy mivel a Windows a fájlpozícióknál \ (fordított per, alt gr + Q) karaktereket használ, és a C-ben a \ speciális karaktert jelent, az összes \ ből legyen kettő (\ helyett \\\\) a stringben, vagy különben a fordító errort fog adni és/vagy rossz helyen keres fájlt.
+
+A fájlt természetesen majd be is kell zárni, erre az `fclose()` függvény szolgál. Úgy gondoljatok az `fopen`-`fclose` függvények relációjára, mint a `malloc`-`free`-re.
+
+Egy példa:
+
+```C
+FILE* fajl;
+fopen_s(&fajl, "D:\\Long\\Long\\fajl.txt", "w");
+
+// Fájlírás
+
+fclose(fajl);
 ```
+
+A $malloc$-hoz hasonlóan az `fopen` függvény sem tud mindig lefutni sikeresen, de ellentétben az előzővel, itt figyelni kell arra, hogy ez ha megtörténik, ne okozzon katasztrofális hibát. Erre több módszer is van, megmutatom a kettő legegyszerűbbet:  
+
+- if: ha a függvény sikertelen, a változónk értéke $NULL$, amit egy iffel tudunk ellenőrizni, ha az if igazad ad vissza, baj történt, bezárjuk a programot:  
+
+```C
+FILE *input;
+fopen_s(&input, "C:\\nincs\\ilyen\\ami\\nem\\jó.csv","r");
+
+if (input == NULL) {
+    printf("ERROR! A fájlbeolvasás sikertelen volt!");
+    exit(-1); //stdlib.h kell ehhez a függvényhez!
+}
+
+// ...
+
+fclose(input);
+```
+
+- assert: az `assert.h` könyvtár névadó makrója ezt csinálja, de egyszerűbben: adunk neki egy paramétert, a programot leállítja, ha az $NULL$ (amúgy assertet malloc sikeres lefutásának ellenőrzéséhez is lehet használni):  
+
+```C
+FILE* input;
+fopen_s(&input, "nemletezikezkollega.json", "r");
+assert(input); // assert.h kell hozzá, de egyszerű használni
+
+//...
+
+fclose(input);
+```
+
+Most, hogy a fájlobjetummal tudunk dolgozni, ideje a *valódi* fájlkezelésre
+
+## Fájlírás
+
+Mint ezelőtt mondtam, ez az egyszerűbb része a fájlkezelésnek, tehát ezzel kezdjük  
+
+Gyakorlatilag ugyanazt csináljuk, mint a stringírásnál, ugyanis a fájloknak is van saját print függvénye: `fprintf`  
+
+Így a fájlírás úgy mehet, mintha a konzolba írnánk:  
+
+```C
+#include <assert.h>
+#include <stdio.h>
+
+int main() {
+    FILE* output
+    fopen_s(&output, "kiiras.txt", "w");
+    assert(output);
+
+    fprintf(output, "Sima söveget lehet,\n");
+    fprintf(output, "De megy a behelyettesítés is, pl.: pi = %lf\n", M_PI);
+    for (int i = 0; i < 10; i++)
+        fprintf(output, "A ciklusok is természetesen működnek, ez a %d. iteráció\n", i);
+
+    fclose(output);
+}
+```
+
+## Fájlolvasás
+
+Erre több fajta megoldás is van természetesen, tehát átmegyünk rajtunk egyesével:
+
+- `fscanf_s`: természetesen így is lehet beolvasni, habár nem ajánlott. Így szöveget nem tudunk beolvasni, de ha tudjuk, hogy hogy vannak formáva az elemek a fájlban (és csak számok vannak), akkor természetesen be lehet olvasni ezzel. Fontos megjegyzés, hogy a függvény nem csak az újsor, hanem a szóköz karaktert is elválasztónak tekinti, tehát nem lehet pl.: "%d %lf" formátummal olvasni, több utasítás kell.
+
+Példa:
+
+$adat.txt$ fájl:
+
+```text
+550 600 900
+```
+
+$main.c$ fájl:
+
+```C
+#include <stdio.h>
+#include <assert.h>
+
+int adatok[3];
+
+int main() {
+    FILE* input;
+    fopen_s(&input,"adat.h","r");
+    assert(input);
+    
+    for (int i = 0; i < 3; i++)
+        fscanf_s(input, "%d", adatok + i);
+    
+    printf("A beolvasott adatok: ");
+    for (int i = 0; i < 3; i++)
+        printf("%d ", adatok[i]);
+    printf("\n");
+
+    fclose(input);
+}
+```
+
+Ez általában nem működik, tehát nem ajánlott, de ha lehet alkalmazni, ez a legegyszerűbb megoldás.
+
+- fgets: Ha egy stringbe akarjuk beolvasni a fájlunkat, akkor az `fgets` függvényt használjuk, aminek a következők a paraméterei:
+
+```C
+char* fgets(char* string, int stringHossza, FILE* fajl);
+```
+
+Ha a visszaadott érték $NULL$, elértük a fájl végét.
+
+Fontos megjegyezni, hogy ez *csak* a következő újsor (\n) karakterig olvas, de meg lehet oldani, hogy egy egész fájlt olvasson be egy "szimpla" algoritumussal:
+
+```C
+#include <string.h>
+#include <stdio.h>
+#include <assert.h>
+#include <stdlib.h>
+
+int main() {
+    char* fajlTartalma = (char*)calloc(4096, 1); //Hosszabbnak kell lennie a fájl tartalmánál!
+    char* tempPuffer = (char*)calloc(4096, 1);
+
+    FILE* input; fopen_s(&input, "adatok.csv", "r");
+    assert(input);
+
+    while (fgets(tempPuffer, 4096, input) != NULL)
+        strcat_s(fajlTartalma, 4096, tempPuffer);
+
+    free(tempPuffer);
+    fclose(input);
+
+    // Mostantól fajlTartalma-ban van a fájl teljes tartalma, használhatjuk sima stringként
+    
+    //...
+
+    free(fajlTartalma);
+}
+```
+
+Itt azért calloccot használunk, mivel lehet, hogy hibásan értelmezi az üres változónkat a `strcat_s` függvény, tehát most kivételesen a malloc nem megfelelő.
