@@ -1,0 +1,6 @@
+85.970641
+76.625874
+1.825007
+Maximum ertek: 85.970641
+Minimum ertek: 1.825007
+Atlagertek: 54.807174

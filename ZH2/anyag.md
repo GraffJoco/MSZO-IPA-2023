@@ -157,7 +157,7 @@ char* pistr = malloc(16); // Nagyobb a kimenetnél, a biztonság kedvéért
 char* valodipistr = malloc(16);
 
 sprintf_s(pistr, 16, ".2%lf", pi); // pistr = "3.14"
-sprintf_s(pistr, 16, ".0%lf", pi); // valodipistr = "3"
+sprintf_s(valodipistr, 16, ".0%lf", pi); // valodipistr = "3"
 
 free(pistr);
 free(valodipistr);
@@ -180,6 +180,16 @@ long long man = atoll("54321");
 printf("%lld", man); //54321
 ```  
   
+### **Beolvasás konzolból**
+
+A `scanf_s` nem jó szöveg beolvasásához, ezért a `gets_s` függvényt használjuk, ami nagyon hasonlít univerzális megfelelőjére:
+
+```C
+gets_s(char* str, size_t str_hossza);
+```
+
+Itt $str$-t írja felül, és biztonságos (_s), ezért ha $str$ hossza nem túl alacsony, az egész szöveg probléma nélkül bekerül a változónkba.
+
 # **Fájlok**
 
 ## Alapok  
