@@ -356,4 +356,35 @@ int main() {
 }
 ```
 
-Itt azért calloccot használunk, mivel lehet, hogy hibásan értelmezi az üres változónkat a `strcat_s` függvény, tehát most kivételesen a malloc nem megfelelő.
+Itt azért calloccot használunk, mivel lehet, hogy hibásan értelmezi az üres változónkat a `strcat_s` függvény, tehát most kivételesen a malloc nem megfelelő.  
+Ez egy példa a stringfüggvények, és fájlolvasás kombinálásának, de ennél szimplábban is megoldható a fájlolvasás  
+  
+A legegyszerűbb stringbe olvasó algoritmus:  
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+int main() {
+    FILE* fajl; fopen_s(&fajl, "adatok.txt", "r");
+    assert(fajl);
+
+    //A fájl végére ugrás
+    fseek(fajl, 0, SEEK_END);
+    int fajlHossz = ftell(fajl); //Kiírja a fájl pozícióját (fájl vége = hossza)
+    fseek(fajl, 0, SEEK_SET); //Vissza az elejére
+
+    char* fajlTartalma = (char*)malloc(fajlHossz);
+    int index = 0;
+
+    while (!feof(fajl)) {
+        fajlTartalma[index] = getc(fajl);
+        index++;
+    }
+
+    //...
+
+    free(fajlTartalma);
+    fclose(fajl);
+}
+```
