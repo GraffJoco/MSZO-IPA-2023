@@ -37,7 +37,7 @@ Ezek a stringek nem olyan egyszerűen hozhatóak létre, de módosíthatóak. It
 ```C
 char pufferesStatikusString[hossz]; //Statikus tömb, ami karakterkkel feltölthető
 
-char* pufferesDinamikusString = malloc(hossz); //Dinamikus tömb, free-ről meg ne feledkezz!
+char* pufferesDinamikusString = (char*)malloc(hossz); //Dinamikus tömb, free-ről meg ne feledkezz!
 ```
 
 ## Alapfüggvények
@@ -153,8 +153,8 @@ Itt egy példa:
 
 ```C
 double pi = 3.14159;
-char* pistr = malloc(16); // Nagyobb a kimenetnél, a biztonság kedvéért
-char* valodipistr = malloc(16);
+char* pistr = (char*)malloc(16); // Nagyobb a kimenetnél, a biztonság kedvéért
+char* valodipistr = (char*)malloc(16);
 
 sprintf_s(pistr, 16, ".2%lf", pi); // pistr = "3.14"
 sprintf_s(valodipistr, 16, ".0%lf", pi); // valodipistr = "3"
