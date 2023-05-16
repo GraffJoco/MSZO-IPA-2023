@@ -35,9 +35,12 @@ Az idézőjelek közötti szövegek mind azok. Ez egyszerűvé teszi a szövegek
 Ezek a stringek nem olyan egyszerűen hozhatóak létre, de módosíthatóak. Itt valódi karaktertömbökről van szó, tehát a két létrehozási mód természetesen:
 
 ```C
+#Define hossz 101 //Ez 100 hosszúnak számít mert a 101. a \0 (101. légió)
+
 char pufferesStatikusString[hossz]; //Statikus tömb, ami karakterkkel feltölthető
 
-char* pufferesDinamikusString = (char*)malloc(hossz); //Dinamikus tömb, free-ről meg ne feledkezz!
+char* pufferesDinamikusString = (char*)malloc(hossz); //Dinamikus tömb
+free(pufferesDinamikusString) //free-ről meg ne feledkezz!
 ```
 
 ## Alapfüggvények
