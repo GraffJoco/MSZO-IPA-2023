@@ -40,6 +40,7 @@ Ezek a stringek nem olyan egyszerűen hozhatóak létre, de módosíthatóak. It
 char pufferesStatikusString[hossz]; //Statikus tömb, ami karakterkkel feltölthető
 
 char* pufferesDinamikusString = (char*)malloc(hossz); //Dinamikus tömb
+
 free(pufferesDinamikusString) //free-ről meg ne feledkezz!
 ```
 
