@@ -80,8 +80,8 @@ Egy fő különbség van: `strncpy` egy harmadik paramétert is kér, hogy hány
 *(Megj. ezzel kapcsolatban: mivel átmásolja a bytokat, de nem az egész stringet, kicímzés elkerüléséért manuálisan kell a 0 karaktert a végére rakni!)*
 
 ```C
-char* strcpy(char* hova, const char* honnan);
-char* strncpy(char* hova, const char* honnan, size_t mennyit);
+char* strcpy_s(char* hova, size_t mennyit, const char* honnan);
+char* strncpy(char* hova, size_t mennyitOda, const char* honnan, size_t mennyitOnnan);
 ```
 
 Itt visszaad egy értéket, ami valójában csak $hova$ értéke, tehát általában mellőzhető  
@@ -95,7 +95,7 @@ const char* binstr = "Hello World!";
 int main() {
     char pufStr[64]; //Hossz legyen minimum strlen(binstr) + 1, különben kicímzés!
 
-    strcpy(pufStr, binstr);
+    strcpy_s(pufStr, 64, binstr);
 }
 ```
 
@@ -117,7 +117,7 @@ De van egy probléma: ha nincsen A-ban legalább `strlen(B)` használatlan byte,
 
 ```C
 char A[10];
-strcpy(A, "Hello, ");
+strcpy_s(A, 10, "Hello, ");
 const char* B = "World";
 strcat_s(A, 10, B);
 
@@ -133,7 +133,7 @@ Esetfüggő, hogy mennyit kell, de mondjuk egy nem nagy stringnek lehet 50-1000 
 
 ```C
 char A[1024];
-strcpy(A, "Hello, ");
+strcpy_s(A, 1024, "Hello, ");
 const char* B = "World";
 strcat_s(A, 10, B);
 
@@ -167,6 +167,93 @@ free(pistr);
 free(valodipistr);
 ```
 
+### **sscanf_s**
+
+Ha a printf-nek van stringes verziója, akkor természetesen a scanf-nek is, ez a `sscanf_s` (biztonságos verzió, természetesen). A függvény egy extra paraméterrel tér csak el konzolos verziójától:  
+
+```C
+sscanf_s(char* string, char* forma, ...);
+```
+
+- $string$: a stringpuffer, ahonnan olvasunk
+- $forma$: a scanf-es formázás, ahol kijelentjük, hogy mit keresünk (pl.: double olvasásnál `"%lf"`)
+- **...**: extra változók, amibe olvassuk az értéket (itt is pointert kell megadni, $\&$-ről meg ne feledkezz!)
+  
+### **Beolvasás konzolból**
+
+A `scanf_s` nem jó szöveg beolvasásához, ezért a `gets_s` függvényt használjuk, ami nagyon hasonlít univerzális megfelelőjére:
+
+```C
+gets_s(char* str, size_t str_hossza);
+```
+
+Itt $str$-t írja felül, és biztonságos (_s), ezért ha $str$ hossza nem túl alacsony, az egész szöveg probléma nélkül bekerül a változónkba.
+
+### **stringek összehasonlítása**
+
+Mit csinálj, ha két stringet össze akarsz hasonlítani? Ha például két string azonosságát akarod ellenőrizni, `str1 == str2` nem használható, az csak a *pointer* értékét, nem a string *tartalmát* hasonlítja össze. Erre megoldás a `strcmp` és `strncmp` függvény.
+
+```C
+int strcmp(char* str1, char* str2);
+int strncmp(char* str1, char* str2, size_t mennyit);
+```
+
+A stringek értéke alapján három lehetséges kimenet van:
+
+- 1, ha $str1 > str2$
+- 0, ha $str1 = str2$
+- -1, ha $str1 < str2$
+
+Itt egy példa gyakorlati hasznára:
+
+Ahogy a kód más nyelvben (Pythonban) nézne ki:
+
+```Python
+szereti = input("Nagyon szereted a tejet? ")
+if szereti == "Igen":
+    kakaot = input("És a kakaót is? ")
+    if kakaot == "Azt is":
+        print("Jó")
+    else:
+        print("Szomorú, te ok")
+else:
+    print("Laktózérzékeny vagy, vagy csak hülye?")
+```
+
+Ennek a C megfelelője:
+
+```C
+#include <stdio.h>
+#include <string.h>
+
+char szereti[64];
+char kakaot[64];
+
+int main() {
+    printf("Nagyon szereted a tejet? ");
+    gets_s(szereti, 64);
+    if (strcmp(szereti, "Igen") == 0) {
+        printf("Es a kakaot is? ");
+        gets_s(kakaot, 64);
+
+        if (strcmp(kakaot, "Azt is") == 0)
+            printf("Jo");
+        else
+            printf("Szomoruva tettel");
+    } else printf("Do you are have stupid?");
+}
+```
+
+### **Keresés egy stringben**
+
+Ha egy stringben keresni akarsz egy karaktert/szövegrészletet, akkor a `strch` és `strstr` (igen, így hívják valamiért) függvényeket használd. Ezek megkeresik az első helyet, ahol a keresett érték megjelenik, és visszaadják a helyét (értsd: pointerét). Amennyiben nem találja a keresett értéket, $NULL$-t ad vissza  
+A hely külön stringként is használható, csak arról meg ne feledkezzetek, hogy az eredeti és itt szerzett string akármilyen módosítása mindkettőre érvényes!
+
+```C
+char* strch(char* string, char keresettKarakter);
+char* strstr(char* string, char* keresettString);
+```
+
 ### **stringből számérték**
 
 Mi van, ha stringből akarsz számot csinálni? Erre vannak függvények természetesen, de nem a `string.h`-ban, hanem a `stdlib.h`-ban!  
@@ -183,16 +270,6 @@ Például:
 long long man = atoll("54321");
 printf("%lld", man); //54321
 ```  
-  
-### **Beolvasás konzolból**
-
-A `scanf_s` nem jó szöveg beolvasásához, ezért a `gets_s` függvényt használjuk, ami nagyon hasonlít univerzális megfelelőjére:
-
-```C
-gets_s(char* str, size_t str_hossza);
-```
-
-Itt $str$-t írja felül, és biztonságos (_s), ezért ha $str$ hossza nem túl alacsony, az egész szöveg probléma nélkül bekerül a változónkba.
 
 # **Fájlok**
 
