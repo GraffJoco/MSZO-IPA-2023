@@ -2,7 +2,7 @@
 
 ## Útmutató
 
-Ezek a feladatok - az előző ZH-hoz hasonlóan - a felkészülés segítésére vannak. A nehézségi szintük változó, de többségük körülbelül olyan nehézszégű feladat, amit zárthelyin is látni lehet. Az egyes feladatok megoldása a $feladat<n>.c$ fájlban található meg.
+Ezek a feladatok - az előző ZH-hoz hasonlóan - a felkészülés segítésére vannak. A nehézségi szintük változó, egyelőre ZH-ra készítő, algoritmusírás-segítő feladatok vannak, nehezebb, ZH szintűek is lesznek hamarosan. Az egyes feladatok megoldása a $feladat<n>.c$ fájlban található meg.
 
 ## 1.: Leghosszabb szó egy fájlban
 
