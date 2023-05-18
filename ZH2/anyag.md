@@ -81,7 +81,7 @@ Egy fő különbség van: `strncpy` egy harmadik paramétert is kér, hogy hány
 
 ```C
 char* strcpy_s(char* hova, size_t mennyit, const char* honnan);
-char* strncpy(char* hova, size_t mennyitOda, const char* honnan, size_t mennyitOnnan);
+char* strncpy_s(char* hova, size_t mennyitOda, const char* honnan, size_t mennyitOnnan);
 ```
 
 Itt visszaad egy értéket, ami valójában csak $hova$ értéke, tehát általában mellőzhető  
@@ -177,7 +177,7 @@ sscanf_s(char* string, char* forma, ...);
 
 - $string$: a stringpuffer, ahonnan olvasunk
 - $forma$: a scanf-es formázás, ahol kijelentjük, hogy mit keresünk (pl.: double olvasásnál `"%lf"`)
-- **...**: extra változók, amibe olvassuk az értéket (itt is pointert kell megadni, $\&$-ről meg ne feledkezz!)
+- **...**: extra változók, amibe olvassuk az értéket (itt is pointert kell megadni, &-ről meg ne feledkezz!)
   
 ### **Beolvasás konzolból**
 
@@ -215,7 +215,7 @@ if szereti == "Igen":
     if kakaot == "Azt is":
         print("Jó")
     else:
-        print("Szomorú, te ok")
+        print("Szomorú, de ok")
 else:
     print("Laktózérzékeny vagy, vagy csak hülye?")
 ```
@@ -270,6 +270,65 @@ Például:
 long long man = atoll("54321");
 printf("%lld", man); //54321
 ```  
+
+### **split, csak rosszabb**
+
+A C-ben, mint programnyelvben van számtalan gyors, szép és/vagy hatékony függvény, ami azt csinálja, amit akarsz. Ezeken a kategóriákon kívül meg ott van az `strtok`, ami megválaszolja a kérdést: hogy lehet a stringek szétdarabolását tönkretenni?  
+Szerencsére, habár ez a függvény az anyag része, szinte biztos nem lesz a ZH-ban, előadáson egyértelmű volt, hogy nem csak én nem szeretem ezt a függvényt.
+
+A függvény a következő képpen működik:
+
+```C
+char* strtok(char* string, char* keresett);
+```
+
+Itt a stringnek a következő előfordulását küldi el neked, mint karakterpointer. Hogyan tudja, hogy melyik volt az előző viszont?  
+Úgy, hogy **AZ STRTOK TÖNKRETESZI A STRINGET**  
+
+Tehát nem optimális, ha stringedet meg kívánod tartani módosítás nélkül (ergo. szinte mindig). Mit csinálj, hogy a stringedet ne tegye tönkre? *Csinálsz egy másolatot, hadd roncsolja azt*:
+
+```C
+// Itt str az eredeti string, amit nem kívánunk módosítani
+char* strDeRoncsolhato = (char*)malloc(strnlen_s(str, 2048)); // 2048 csak egy random szám itt
+
+strcpy_s(strDeRoncsolhato, strnlen_s(str, 2048), str);
+
+char* strDarab;
+
+while (1) {
+    strDarab = strtok(strDeRoncsolhato, " "); // Mintha egy splittömb i. elemét használnád más nyelvben
+    if (strDarab == NULL) break; // Ha nem talál semmit, kilépünk
+
+    // strDarabbal csinálhatunk itt, amit akarunk
+}
+
+free(strDeRoncsolhato);
+```
+
+Amennyiben rendesen, stringkárodítás nélkül akarjátok megcsinálni, így lehet függvényt írni erre:
+
+```C
+char* strSplit(char* str, char* keresendoErtek, int hanyadik) {
+    char* kezdo = str;
+    
+    for (int i = 0; i < hanyadik; i++) {
+        kezdo = strstr(kezdo, keresendoErtek);
+        if (kezdo == NULL) return NULL;
+    }
+
+    char* vegso = strstr(kezdo, keresendoErtek);
+    if (vegso == NULL) return kezdo;
+
+    long long strHossz = (long long)vegso - (long long) kezdo;
+
+    char* rtn = (char*)malloc(strHossz + 1); // + 1, mert a 0 karakter automatikusan nem kerülne bele
+    rtn[strHossz] = '\0';
+
+    strncpy_s(rtn, strHossz, kezdo, strHossz);
+
+    return rtn; // rtn-t majd fel kell szabadítani!
+}
+```
 
 # **Fájlok**
 
@@ -468,4 +527,18 @@ int main() {
     free(fajlTartalma);
     fclose(fajl);
 }
+```
+
+### **Fájlműveletek**
+
+- Fájl átnevezése:
+
+```C
+rename(char* reginev, char* ujnev);
+```
+
+- Fájl törlése:
+
+```C
+unlink(char* nev);
 ```
