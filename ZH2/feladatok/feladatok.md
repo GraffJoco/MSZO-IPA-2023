@@ -65,13 +65,18 @@ Határozd meg, rímel-e, és ha igen, hogyan:
 Olvasd be a sudoku.txt fájlt! A fájl egy 9x9-es, befejezetlen sudoku tábla, a kitöltetlen cellákban 'x' karakter van.
 Kérj be egy koordinátát, és egy számot, és ellenőrizd, hogy
 
-- Üres a cella
+- Üres-e a cella
 - Lehet-e oda rakni-e azt az értéket
 
 A sudoku szabályai azoknak, akik nem tudják:
 
+- Az értékek 1-9-ig menő számok, ha valahol nincs érték, azt 'x'-el jelöljük
+- Minden sor külön sorba kerül a fájlban
 - Egy érték csak egyszer szerepelhet egy sorban/oszlopban
 - A 9x9-es pálya 3x3 3x3-as almezőre van osztva, ezekben is minden számnak egyedinek kell maradnia!
+- A pályakoordináták 1-9-ig mennek mindkét tengelyen!
+
+Feltételezhetjük, hogy jó formátumban van a fájl!
 
 ## Bónusz: STL importálása
 
