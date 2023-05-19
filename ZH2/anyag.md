@@ -76,7 +76,7 @@ int main() {
 ### **strcpy_s, strncpy_s**
 
 Ezek a függvények egyik stringből a másikba másolnak.  
-Egy fő különbség van: `strncpy_s` egy harmadik paramétert is kér, hogy hány bytot másoljon át  
+Egy fő különbség van: `strncpy_s` egy negyedik paramétert is kér, hogy hány bytot másoljon át  
 *(Megj. ezzel kapcsolatban: mivel átmásolja a bytokat, de nem az egész stringet, kicímzés elkerüléséért manuálisan kell a 0 karaktert a végére rakni!)*
 
 ```C
