@@ -18,4 +18,4 @@
 
 ## Mostani státusza a konzultációnak
 - Első konzultáció sikeresen lezajlott
-- Második konzultáció anyaga kész, videó gyártás alatt áll
+- Második konzultáció anyaga és feladatai készen vannak, videó gyártás alatt áll
