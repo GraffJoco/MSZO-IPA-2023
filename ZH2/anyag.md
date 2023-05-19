@@ -80,8 +80,8 @@ Egy fő különbség van: `strncpy` egy harmadik paramétert is kér, hogy hány
 *(Megj. ezzel kapcsolatban: mivel átmásolja a bytokat, de nem az egész stringet, kicímzés elkerüléséért manuálisan kell a 0 karaktert a végére rakni!)*
 
 ```C
-char* strcpy(char* hova, const char* honnan);
-char* strncpy(char* hova, const char* honnan, size_t mennyit);
+char* strcpy_s(char* hova, size_t mennyit, const char* honnan);
+char* strncpy_s(char* hova, size_t mennyitOda, const char* honnan, size_t mennyitOnnan);
 ```
 
 Itt visszaad egy értéket, ami valójában csak $hova$ értéke, tehát általában mellőzhető  
@@ -95,7 +95,7 @@ const char* binstr = "Hello World!";
 int main() {
     char pufStr[64]; //Hossz legyen minimum strlen(binstr) + 1, különben kicímzés!
 
-    strcpy(pufStr, binstr);
+    strcpy_s(pufStr, 64, binstr);
 }
 ```
 
@@ -117,7 +117,7 @@ De van egy probléma: ha nincsen A-ban legalább `strlen(B)` használatlan byte,
 
 ```C
 char A[10];
-strcpy(A, "Hello, ");
+strcpy_s(A, 10, "Hello, ");
 const char* B = "World";
 strcat_s(A, 10, B);
 
@@ -133,7 +133,7 @@ Esetfüggő, hogy mennyit kell, de mondjuk egy nem nagy stringnek lehet 50-1000 
 
 ```C
 char A[1024];
-strcpy(A, "Hello, ");
+strcpy_s(A, 1024, "Hello, ");
 const char* B = "World";
 strcat_s(A, 10, B);
 
@@ -167,6 +167,93 @@ free(pistr);
 free(valodipistr);
 ```
 
+### **sscanf_s**
+
+Ha a printf-nek van stringes verziója, akkor természetesen a scanf-nek is, ez a `sscanf_s` (biztonságos verzió, természetesen). A függvény egy extra paraméterrel tér csak el konzolos verziójától:  
+
+```C
+sscanf_s(char* string, char* forma, ...);
+```
+
+- $string$: a stringpuffer, ahonnan olvasunk
+- $forma$: a scanf-es formázás, ahol kijelentjük, hogy mit keresünk (pl.: double olvasásnál `"%lf"`)
+- **...**: extra változók, amibe olvassuk az értéket (itt is pointert kell megadni, &-ről meg ne feledkezz!)
+  
+### **Beolvasás konzolból**
+
+A `scanf_s` nem jó szöveg beolvasásához, ezért a `gets_s` függvényt használjuk, ami nagyon hasonlít univerzális megfelelőjére:
+
+```C
+gets_s(char* str, size_t str_hossza);
+```
+
+Itt $str$-t írja felül, és biztonságos (_s), ezért ha $str$ hossza nem túl alacsony, az egész szöveg probléma nélkül bekerül a változónkba.
+
+### **stringek összehasonlítása**
+
+Mit csinálj, ha két stringet össze akarsz hasonlítani? Ha például két string azonosságát akarod ellenőrizni, `str1 == str2` nem használható, az csak a *pointer* értékét, nem a string *tartalmát* hasonlítja össze. Erre megoldás a `strcmp` és `strncmp` függvény.
+
+```C
+int strcmp(char* str1, char* str2);
+int strncmp(char* str1, char* str2, size_t mennyit);
+```
+
+A stringek értéke alapján három lehetséges kimenet van:
+
+- 1, ha $str1 > str2$
+- 0, ha $str1 = str2$
+- -1, ha $str1 < str2$
+
+Itt egy példa gyakorlati hasznára:
+
+Ahogy a kód más nyelvben (Pythonban) nézne ki:
+
+```Python
+szereti = input("Nagyon szereted a tejet? ")
+if szereti == "Igen":
+    kakaot = input("És a kakaót is? ")
+    if kakaot == "Azt is":
+        print("Jó")
+    else:
+        print("Szomorú, de ok")
+else:
+    print("Laktózérzékeny vagy, vagy csak hülye?")
+```
+
+Ennek a C megfelelője:
+
+```C
+#include <stdio.h>
+#include <string.h>
+
+char szereti[64];
+char kakaot[64];
+
+int main() {
+    printf("Nagyon szereted a tejet? ");
+    gets_s(szereti, 64);
+    if (strcmp(szereti, "Igen") == 0) {
+        printf("Es a kakaot is? ");
+        gets_s(kakaot, 64);
+
+        if (strcmp(kakaot, "Azt is") == 0)
+            printf("Jo");
+        else
+            printf("Szomoruva tettel");
+    } else printf("Do you are have stupid?");
+}
+```
+
+### **Keresés egy stringben**
+
+Ha egy stringben keresni akarsz egy karaktert/szövegrészletet, akkor a `strch` és `strstr` (igen, így hívják valamiért) függvényeket használd. Ezek megkeresik az első helyet, ahol a keresett érték megjelenik, és visszaadják a helyét (értsd: pointerét). Amennyiben nem találja a keresett értéket, $NULL$-t ad vissza  
+A hely külön stringként is használható, csak arról meg ne feledkezzetek, hogy az eredeti és itt szerzett string akármilyen módosítása mindkettőre érvényes!
+
+```C
+char* strch(char* string, char keresettKarakter);
+char* strstr(char* string, char* keresettString);
+```
+
 ### **stringből számérték**
 
 Mi van, ha stringből akarsz számot csinálni? Erre vannak függvények természetesen, de nem a `string.h`-ban, hanem a `stdlib.h`-ban!  
@@ -183,16 +270,65 @@ Például:
 long long man = atoll("54321");
 printf("%lld", man); //54321
 ```  
-  
-### **Beolvasás konzolból**
 
-A `scanf_s` nem jó szöveg beolvasásához, ezért a `gets_s` függvényt használjuk, ami nagyon hasonlít univerzális megfelelőjére:
+### **split, csak rosszabb**
+
+A C-ben, mint programnyelvben van számtalan gyors, szép és/vagy hatékony függvény, ami azt csinálja, amit akarsz. Ezeken a kategóriákon kívül meg ott van az `strtok`, ami megválaszolja a kérdést: hogy lehet a stringek szétdarabolását tönkretenni?  
+Szerencsére, habár ez a függvény az anyag része, szinte biztos nem lesz a ZH-ban, előadáson egyértelmű volt, hogy nem csak én nem szeretem ezt a függvényt.
+
+A függvény a következő képpen működik:
 
 ```C
-gets_s(char* str, size_t str_hossza);
+char* strtok(char* string, char* keresett);
 ```
 
-Itt $str$-t írja felül, és biztonságos (_s), ezért ha $str$ hossza nem túl alacsony, az egész szöveg probléma nélkül bekerül a változónkba.
+Itt a stringnek a következő előfordulását küldi el neked, mint karakterpointer. Hogyan tudja, hogy melyik volt az előző viszont?  
+Úgy, hogy **AZ STRTOK TÖNKRETESZI A STRINGET**  
+
+Tehát nem optimális, ha stringedet meg kívánod tartani módosítás nélkül (ergo. szinte mindig). Mit csinálj, hogy a stringedet ne tegye tönkre? *Csinálsz egy másolatot, hadd roncsolja azt*:
+
+```C
+// Itt str az eredeti string, amit nem kívánunk módosítani
+char* strDeRoncsolhato = (char*)malloc(strnlen_s(str, 2048)); // 2048 csak egy random szám itt
+
+strcpy_s(strDeRoncsolhato, strnlen_s(str, 2048), str);
+
+char* strDarab;
+
+while (1) {
+    strDarab = strtok(strDeRoncsolhato, " "); // Mintha egy splittömb i. elemét használnád más nyelvben
+    if (strDarab == NULL) break; // Ha nem talál semmit, kilépünk
+
+    // strDarabbal csinálhatunk itt, amit akarunk
+}
+
+free(strDeRoncsolhato);
+```
+
+Amennyiben rendesen, stringkárodítás nélkül akarjátok megcsinálni, így lehet függvényt írni erre:
+
+```C
+char* strSplit(char* str, char* keresendoErtek, int hanyadik) {
+    char* kezdo = str;
+    
+    for (int i = 0; i < hanyadik; i++) {
+        kezdo = strstr(kezdo, keresendoErtek);
+        if (kezdo == NULL) return NULL;
+    }
+
+    char* vegso = strstr(kezdo, keresendoErtek);
+    if (vegso == NULL) return kezdo;
+
+    long long strHossz = (long long)vegso - (long long) kezdo;
+
+    char* rtn = (char*)malloc(strHossz + 1); // + 1, mert a 0 karakter automatikusan nem kerülne bele
+    rtn[strHossz] = '\0';
+
+    strncpy_s(rtn, strHossz, kezdo, strHossz);
+
+    return rtn; // rtn-t majd fel kell szabadítani!
+}
+```
 
 # **Fájlok**
 
@@ -391,4 +527,18 @@ int main() {
     free(fajlTartalma);
     fclose(fajl);
 }
+```
+
+### **Fájlműveletek**
+
+- Fájl átnevezése:
+
+```C
+rename(char* reginev, char* ujnev);
+```
+
+- Fájl törlése:
+
+```C
+unlink(char* nev);
 ```

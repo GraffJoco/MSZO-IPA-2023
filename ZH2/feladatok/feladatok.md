@@ -2,7 +2,7 @@
 
 ## Útmutató
 
-Ezek a feladatok - az előző ZH-hoz hasonlóan - a felkészülés segítésére vannak. A nehézségi szintük változó, de többségük körülbelül olyan nehézszégű feladat, amit zárthelyin is látni lehet. Az egyes feladatok megoldása a $feladat<n>.c$ fájlban található meg.
+Ezek a feladatok - az előző ZH-hoz hasonlóan - a felkészülés segítésére vannak. A nehézségi szintük változó, egyelőre ZH-ra készítő, algoritmusírás-segítő feladatok vannak, de léteznek nehezebb, ZH szintűek is. Az egyes feladatok megoldása a $feladatN.c$ fájlban található meg.
 
 ## 1.: Leghosszabb szó egy fájlban
 
@@ -47,6 +47,31 @@ Maximum ertek: <tömb maximuma>
 Minimum ertek: <tömb minimuma>
 Atlagertek: <tömb értékeinek átlaga>
 ```
+
+## **INNEN ZH+ SZINTŰ FELADATOK JÖNNEK**
+
+## 5.: Rímel-e?
+
+Kérj 2 (max. 512 byte hosszú) szöveget a felhasználótól!
+Határozd meg, rímel-e, és ha igen, hogyan:
+- Nem rímel, ha nem rímel
+- Gyenge rím, ha mindkét szöveg utolsó magánhangzója ugyanaz
+- Erős rím, ha a gyenge rím szabályán kívül a magánhangzók száma is ugyanaz
+
+(Ebben a feladatban csak az angol ábécé betűivel kell dolgozni)
+
+## 6.: Sudoku
+
+Olvasd be a sudoku.txt fájlt! A fájl egy 9x9-es, befejezetlen sudoku tábla, a kitöltetlen cellákban 'x' karakter van.
+Kérj be egy koordinátát, és egy számot, és ellenőrizd, hogy
+
+- Üres a cella
+- Lehet-e oda rakni-e azt az értéket
+
+A sudoku szabályai azoknak, akik nem tudják:
+
+- Egy érték csak egyszer szerepelhet egy sorban/oszlopban
+- A 9x9-es pálya 3x3 3x3-as almezőre van osztva, ezekben is minden számnak egyedinek kell maradnia!
 
 ## Bónusz: STL importálása
 
