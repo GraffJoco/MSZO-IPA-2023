@@ -499,7 +499,32 @@ int main() {
 Itt azért calloccot használunk, mivel lehet, hogy hibásan értelmezi az üres változónkat a `strcat_s` függvény, tehát most kivételesen a malloc nem megfelelő.  
 Ez egy példa a stringfüggvények, és fájlolvasás kombinálásának, de ennél szimplábban is megoldható a fájlolvasás  
   
-A legegyszerűbb stringbe olvasó algoritmus:  
+Ehhez még 2, minimális függvényt kell tanulnunk
+
+### **fseek**
+
+Ezzel a függvénnyel lehet a fájl belső pozícióját (olvasási pointert/kurzort) mozgatni:
+
+```C
+fseek(FILE* fajl, size_t delta, size_t mod);
+```
+
+- $fajl$ a fájlobjektum
+- $delta$ az, hogy mennyivel kell a $mód$ által definiált pozícióhoz képest mozgatni a kurzort (szinte mindig 0)
+- $mod$ a speciális pozíciót definiálja, amihez képest tudjuk mozgatni a kurzort, 3 mód van:
+    - SEEK_SET: fájl eleje
+    - SEEK_CUR: mostani pozíció
+    - SEEK_END: fájl vége
+
+### **ftell**
+
+Ez egy szimpla függvény, ami visszaadja a mostani kurzorpozíciót a fájlban:
+
+```C
+int ftell(FILE* fajl);
+```
+  
+### **A legegyszerűbb stringbe olvasó algoritmus**   
 ```C
 #include <stdio.h>
 #include <stdlib.h>
@@ -517,6 +542,9 @@ int main() {
     char* fajlTartalma = (char*)malloc(fajlHossz);
     int index = 0;
 
+    // Tömbbe kiírjuk karakterenként a fájl tartalmát
+    // Lehetne egyszerűbb/gyorsabb? Persze
+    // Ez viszont szimpla, és bőven megfelel
     while (!feof(fajl)) {
         fajlTartalma[index] = getc(fajl);
         index++;
