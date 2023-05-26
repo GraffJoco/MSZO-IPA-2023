@@ -279,7 +279,7 @@ Szerencsére, habár ez a függvény az anyag része, szinte biztos nem lesz a Z
 A függvény a következő képpen működik:
 
 ```C
-char* strtok(char* string, char* keresett);
+char* strtok_s(char* string, char* keresett, char* context);
 ```
 
 Itt a stringnek a következő előfordulását küldi el neked, mint karakterpointer. Hogyan tudja, hogy melyik volt az előző viszont?  
@@ -290,13 +290,14 @@ Tehát nem optimális, ha stringedet meg kívánod tartani módosítás nélkül
 ```C
 // Itt str az eredeti string, amit nem kívánunk módosítani
 char* strDeRoncsolhato = (char*)malloc(strnlen_s(str, 2048)); // 2048 csak egy random szám itt
+char* ctx; // nincs haszna, csak paraméter strtoknak
 
 strcpy_s(strDeRoncsolhato, strnlen_s(str, 2048), str);
 
 char* strDarab;
 
 while (1) {
-    strDarab = strtok(strDeRoncsolhato, " "); // Mintha egy splittömb i. elemét használnád más nyelvben
+    strDarab = strtok(strDeRoncsolhato, " ", ctx); // Mintha egy splittömb i. elemét használnád más nyelvben
     if (strDarab == NULL) break; // Ha nem talál semmit, kilépünk
 
     // strDarabbal csinálhatunk itt, amit akarunk
@@ -305,30 +306,7 @@ while (1) {
 free(strDeRoncsolhato);
 ```
 
-Amennyiben rendesen, stringkárodítás nélkül akarjátok megcsinálni, így lehet függvényt írni erre:
-
-```C
-char* strSplit(char* str, char* keresendoErtek, int hanyadik) {
-    char* kezdo = str;
-    
-    for (int i = 0; i < hanyadik; i++) {
-        kezdo = strstr(kezdo, keresendoErtek);
-        if (kezdo == NULL) return NULL;
-    }
-
-    char* vegso = strstr(kezdo, keresendoErtek);
-    if (vegso == NULL) return kezdo;
-
-    long long strHossz = (long long)vegso - (long long) kezdo;
-
-    char* rtn = (char*)malloc(strHossz + 1); // + 1, mert a 0 karakter automatikusan nem kerülne bele
-    rtn[strHossz] = '\0';
-
-    strncpy_s(rtn, strHossz, kezdo, strHossz);
-
-    return rtn; // rtn-t majd fel kell szabadítani!
-}
-```
+Amennyiben ígyis-úgyis felülírjuk az eredeti stringet (pl.: hogyha a sorokat ebbe olvassuk bele, feldolgozzuk, és megyünk a következőre), akkor nem kell külön stringet létrehozni, elég az elsővel dolgozni
 
 # **Fájlok**
 
@@ -360,9 +338,9 @@ fopen_s(&fajl, "D:\\Long\\Long\\fajl.txt", "w");
 fclose(fajl);
 ```
 
-A $malloc$-hoz hasonlóan az `fopen` függvény sem tud mindig lefutni sikeresen, de ellentétben az előzővel, itt figyelni kell arra, hogy ez ha megtörténik, ne okozzon katasztrofális hibát. Erre több módszer is van, megmutatom a kettő legegyszerűbbet:  
+A $malloc$-hoz hasonlóan az `fopen` függvény sem tud mindig lefutni sikeresen, de ellentétben az előzővel, itt figyelni kell arra, hogy ez ha megtörténik, ne okozzon katasztrofális hibát. Erre több módszer is van, megmutatom a legegyszerűbbet, amit lehet ZH-n használni:  
 
-- if: ha a függvény sikertelen, a változónk értéke $NULL$, amit egy iffel tudunk ellenőrizni, ha az if igazad ad vissza, baj történt, bezárjuk a programot:  
+Ha a függvény sikertelen, a változónk értéke $NULL$, amit egy iffel tudunk ellenőrizni, ha az if igazad ad vissza, baj történt, bezárjuk a programot:  
 
 ```C
 FILE *input;
@@ -378,12 +356,16 @@ if (input == NULL) {
 fclose(input);
 ```
 
-- assert: az `assert.h` könyvtár névadó makrója ezt csinálja, de egyszerűbben: adunk neki egy paramétert, a programot leállítja, ha az $NULL$ (amúgy assertet malloc sikeres lefutásának ellenőrzéséhez is lehet használni):  
+A fájl nevének kiírása is fontos, tehát egy `define`-al lehet egyszerűen megoldani:   
 
 ```C
+#define fajlNev "nemletezikezkollega.json"
 FILE* input;
-fopen_s(&input, "nemletezikezkollega.json", "r");
-assert(input); // assert.h kell hozzá, de egyszerű használni
+fopen_s(&input, fajlNev, "r");
+if (input == NULL) {
+    printf("A %s fajlt nem sikerult beolvasni!\n", fajlNev);
+    return -1; // stdlib.h nélkül kilépünk, de csak ha main-ben vagyunk!
+}
 
 //...
 
@@ -401,13 +383,17 @@ Gyakorlatilag ugyanazt csináljuk, mint a stringírásnál, ugyanis a fájloknak
 Így a fájlírás úgy mehet, mintha a konzolba írnánk:  
 
 ```C
-#include <assert.h>
 #include <stdio.h>
+
+#define fajlNev "kiiras.txt"
 
 int main() {
     FILE* output
-    fopen_s(&output, "kiiras.txt", "w");
-    assert(output);
+    fopen_s(&output, fajlNev, "w");
+    if (output == NULL) {
+        printf("A %s nevu fajlt nem sikerult megnyitni!\n", fajlNev);
+        return -1;
+    }
 
     fprintf(output, "Sima söveget lehet,\n");
     fprintf(output, "De megy a behelyettesítés is, pl.: pi = %lf\n", M_PI);
@@ -436,14 +422,17 @@ $main.c$ fájl:
 
 ```C
 #include <stdio.h>
-#include <assert.h>
 
 int adatok[3];
+#define fajlNev "adat.h"
 
 int main() {
     FILE* input;
-    fopen_s(&input,"adat.h","r");
-    assert(input);
+    fopen_s(&input, fajlNev, "r");
+    if (input == NULL) {
+        printf("A %s fajlt nem lehetett megnyitni\n", fajlNev);
+        return -1;
+    }
     
     for (int i = 0; i < 3; i++)
         fscanf_s(input, "%d", adatok + i);
@@ -466,40 +455,6 @@ char* fgets(char* string, int stringHossza, FILE* fajl);
 ```
 
 Ha a visszaadott érték $NULL$, elértük a fájl végét.
-
-Fontos megjegyezni, hogy ez *csak* a következő újsor (\n) karakterig olvas, de meg lehet oldani, hogy egy egész fájlt olvasson be egy "szimpla" algoritumussal:
-
-```C
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
-#include <stdlib.h>
-
-int main() {
-    char* fajlTartalma = (char*)calloc(4096, 1); //Hosszabbnak kell lennie a fájl tartalmánál!
-    char* tempPuffer = (char*)calloc(4096, 1);
-
-    FILE* input; fopen_s(&input, "adatok.csv", "r");
-    assert(input);
-
-    while (fgets(tempPuffer, 4096, input) != NULL)
-        strcat_s(fajlTartalma, 4096, tempPuffer);
-
-    free(tempPuffer);
-    fclose(input);
-
-    // Mostantól fajlTartalma-ban van a fájl teljes tartalma, használhatjuk sima stringként
-    
-    //...
-
-    free(fajlTartalma);
-}
-```
-
-Itt azért calloccot használunk, mivel lehet, hogy hibásan értelmezi az üres változónkat a `strcat_s` függvény, tehát most kivételesen a malloc nem megfelelő.  
-Ez egy példa a stringfüggvények, és fájlolvasás kombinálásának, de ennél szimplábban is megoldható a fájlolvasás  
-  
-Ehhez még 2, minimális függvényt kell tanulnunk
 
 ### **fseek**
 
@@ -524,30 +479,29 @@ Ez egy szimpla függvény, ami visszaadja a mostani kurzorpozíciót a fájlban:
 int ftell(FILE* fajl);
 ```
   
-### **A legegyszerűbb stringbe olvasó algoritmus**   
+### **Sor beolvasása stringbe**   
+
+Az `fgets` függvénnyel be tudunk olvasni egy-egy sort a fájlból, amit azután fel tudunk dolgozni:
+
 ```C
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+
+#define fajlNev "adatok.txt"
 
 int main() {
-    FILE* fajl; fopen_s(&fajl, "adatok.txt", "r");
-    assert(fajl);
+    FILE* fajl; fopen_s(&fajl, fajlNev, "r");
+    if (fajl == NULL) {
+        printf("A %s fajlt nem tudtam megnyitni!\n", fajlNev);
+        return -1;
+    }
 
-    //A fájl végére ugrás
-    fseek(fajl, 0, SEEK_END);
-    int fajlHossz = ftell(fajl); //Kiírja a fájl pozícióját (fájl vége = hossza)
-    fseek(fajl, 0, SEEK_SET); //Vissza az elejére
+    char sor[4096]; // Random hossz, ami hosszabb egy sornál
 
-    char* fajlTartalma = (char*)malloc(fajlHossz);
-    int index = 0;
-
-    // Tömbbe kiírjuk karakterenként a fájl tartalmát
-    // Lehetne egyszerűbb/gyorsabb? Persze
-    // Ez viszont szimpla, és bőven megfelel
+    // Amíg nem vagyunk a végén
     while (!feof(fajl)) {
-        fajlTartalma[index] = getc(fajl);
-        index++;
+        fgets(sor, 4096, fajl);
+        // Innentől a while végéig sor tartalma a mostani sorunkkal egyenlő, fel lehet dolgozni
     }
 
     //...
