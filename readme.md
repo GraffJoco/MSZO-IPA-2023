@@ -18,3 +18,4 @@
 
 ## Mostani státusza a konzultációnak
 - Kész mindkettő konzultáció
+- Ellenőrizd a commitok számát, kérlek
