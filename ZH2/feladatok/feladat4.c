@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <assert.h>
+
+#define fajlNev "output.txt"
 
 int main() {
     srand((unsigned int)time(NULL));
@@ -13,8 +14,11 @@ int main() {
     double* szamok = (double*) malloc(n * sizeof(double));
     double szumma = 0.0;
 
-    FILE* output; fopen_s(&output, "output.txt", "w");
-    assert(output);
+    FILE* output; fopen_s(&output, fajlNev, "w");
+    if (output == NULL) {
+        printf("A %s fajlt nem sikerult beolvasni!\n",fajlNev);
+        return -1;
+    }
 
     for (int i = 0; i < n; i++) {
         szamok[i] = (double)rand() / RAND_MAX * 100;

@@ -1,50 +1,45 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+
+#define fajlNev "szoveg.txt"
 
 int main() {
     // Fájl objektum létrehozása
-    FILE* szoveg; fopen_s(&szoveg, "szoveg.txt", "r");
-    assert(szoveg);
-
-    // Fájl hosszának megszerzése
-    fseek(szoveg, 0, SEEK_END);
-    int fajlHossz = ftell(szoveg);
-    fseek(szoveg, 0, SEEK_SET);
-
-    // Beolvasás
-    char* fajlTomb = (char*)malloc(fajlHossz);
-    int index = 0;
-    while (!feof(szoveg)) {
-        fajlTomb[index] = getc(szoveg);
-        index++;
+    FILE* szoveg; fopen_s(&szoveg, fajlNev, "r");
+    if (szoveg == NULL) {
+        printf("A %s fajlt nem sikerult megnyitni!\n",fajlNev);
+        return -1;
     }
 
-    // Mostantól maxHossz a leghosszabb szó hosszát tartalmazza,
-    // index pedig a helyét fajlTomb-ben
     int maxHossz = 0;
-    index = 0;
-    int mostaniHossz = 0;
-
-    for (int i = 0; i < fajlHossz; i++) {
-        // Szó vége
-        if (fajlTomb[i] == ' ' || fajlTomb[i] == '\n' || fajlTomb[i] == '\r' || fajlTomb[i] == '.' || fajlTomb[i] == ',' || i == fajlHossz - 1) {
-            if (mostaniHossz > maxHossz) {
-                index = i - mostaniHossz;
-                maxHossz = mostaniHossz;
+    int mostHossz = 0;
+    char leghosszabbSzo[64];
+    
+    while (!feof(szoveg)) {
+        // Itt switchet használok, mert gyorsabb
+        // egy if természetesen ugyanúgy működne
+        switch (getc(szoveg)) {
+        case '.':
+        case ',':
+        case ' ':
+        case ':':
+        case '\n':
+            // Szó hosszanalízise
+            if (mostHossz > maxHossz) {
+                // Vissza mozgatja a kurzort, hogy a stringet bemásolhassuk a pufferünkbe
+                fseek(szoveg,-mostHossz-1,SEEK_CUR);
+                fgets(leghosszabbSzo,mostHossz+1,szoveg);
+                maxHossz = mostHossz;
             }
-            mostaniHossz = 0;
-        } else {
-            mostaniHossz++;
+            mostHossz = 0;
+            break;
+        default:
+            mostHossz++;
+            break;
         }
     }
-    
-    printf("A leghosszabb szo %d betu hosszu!\n", maxHossz);
-    printf("A leghosszabb szo pedig: ");
-    for (int i = index; i < index + maxHossz; i++)
-        printf("%c", fajlTomb[i]);
-    printf("\n");
 
-    free(fajlTomb);
+    printf("A leghosszabb szo: %s\n",leghosszabbSzo);
+    printf("A szo %d betus!\n",maxHossz);
+
     fclose(szoveg);
 }

@@ -17,5 +17,4 @@
     - A segítőfeladatok a $ZH/feladatok$ mappában vannak. A $feladatok.md$ fájl írja le a feladatot, és követelményeit, míg a $feladatN.c$ fájl írja le az $N$. feladat (egyik) megoldását
 
 ## Mostani státusza a konzultációnak
-- Első konzultáció sikeresen lezajlott
-- Második konzultáció anyaga és feladatai készen vannak, videó gyártás alatt áll
+- Kész mindkettő konzultáció

@@ -1,10 +1,14 @@
 #include <stdio.h>
-#include <assert.h>
 #include <stdbool.h>
 
+#define fajlNev "adatok.csv"
+
 int main() {
-    FILE* input; fopen_s(&input, "adatok.csv", "r");
-    assert(input);
+    FILE* input; fopen_s(&input, fajlNev, "r");
+    if (input == NULL) {
+        printf("A %s fajlt nem sikerult megnyitni!\n",fajlNev);
+        return -1;
+    }
 
     // 1. sor átugrása
     do {
@@ -13,6 +17,7 @@ int main() {
 
     double kiadasSzumma = 0;
     double bevetelSzumma = 0;
+    // int is használható (false/true helyett 1/0 értékekkel)
     bool voltVesztesegesHonap = false;
 
     int mostaniHonap;

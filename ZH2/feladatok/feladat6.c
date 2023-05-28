@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+
+#define fajlNev "sudoku.txt"
 
 char tabla[81]; // 9x9-es tabla
 
@@ -11,8 +12,11 @@ int koordinatabolindex(int x, int y) {
 }
 
 int main() {
-    FILE* input; fopen_s(&input, "sudoku.txt", "r");
-    assert(input);
+    FILE* input; fopen_s(&input, fajlNev, "r");
+    if (input == NULL) {
+        printf("A %s fajlt nem sikerult megnyitni\n",fajlNev);
+        return -1;
+    }
 
     // Beolvasás
     char temp;
@@ -63,21 +67,12 @@ int main() {
     }
 
     // A beírandó szám kérése
-    int beirando_i;
-    printf("Milyen (1-9-ig) erteket kivan beirni a cellaba? ");
-    scanf_s("%d", &beirando_i);
+    char beirando;
+    printf("Milyen erteket kivan beirni? ");
+    // Szóköz fontos itt, mert karakterbeolvasásnál különben nem mellézné az üres (pl. újsor) karaktereket!
+    // Eredetileg itt egy csúnya sprintf-es hacket raktam (működik, de szuboptimális)
+    scanf_s(" %c", &beirando);
 
-    if (beirando_i < 1 || beirando_i > 9) {
-        printf("Rossz szamot adott meg!\n");
-        exit(0);
-    }
-
-    // Ahhoz, hogy egyszerűen tudjunk ellenőrizni értéket, jó lenne karaktert csinálni beirandobol
-    // Ezt mostani tudásunk alapján úgy tudjuk megcsinálni, hogy
-    // sprintf-el stringbe rakjuk, annak meg vesszük a 0. karakterét
-    char tempTomb[64];
-    sprintf_s(tempTomb, 64, "%d", beirando_i);
-    char beirando = tempTomb[0];
     
     // Ideje ellenőrizni az érték helyességét
     // Első if a sorok, a második az oszlopok helyességét ellenőrzi
